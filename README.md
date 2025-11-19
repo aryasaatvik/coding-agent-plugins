@@ -21,37 +21,52 @@ _More plugins coming soon!_
 
 ## 🚀 Quick Start
 
-### Interactive Installation
+### Installation via NPM (Recommended)
 
-Install plugins interactively with our beautiful terminal UI:
+Install plugins using the CLI package:
+
+```bash
+# Interactive installation (recommended)
+bunx coding-agent-plugins
+
+# Or with npx
+npx coding-agent-plugins
+```
+
+### Command-Line Options
+
+```bash
+# Install all plugins
+bunx coding-agent-plugins install --all
+
+# Install specific plugins
+bunx coding-agent-plugins install --plugins=ni
+
+# Platform-specific installation
+bunx coding-agent-plugins install --claude-only
+bunx coding-agent-plugins install --opencode-only
+
+# Skip confirmation prompts
+bunx coding-agent-plugins install --yes
+
+# Preview changes without installing
+bunx coding-agent-plugins install --dry-run
+```
+
+### Alternative: Local Installation
+
+If you prefer to clone the repository:
 
 ```bash
 # Clone the repository
 git clone https://github.com/aryasaatvik/coding-agent-plugins.git
 cd coding-agent-plugins
 
+# Install dependencies
+bun install
+
 # Run the installer
 bun install.ts
-```
-
-### Command-Line Installation
-
-```bash
-# Install all plugins
-bun install.ts --all
-
-# Install specific plugins
-bun install.ts --plugins=ni
-
-# Platform-specific installation
-bun install.ts --claude-only
-bun install.ts --opencode-only
-
-# Skip confirmation prompts
-bun install.ts --yes
-
-# Preview changes without installing
-bun install.ts --dry-run
 ```
 
 ## 📋 Prerequisites
@@ -182,6 +197,73 @@ turbo run build --dry-run
 # Force rebuild without cache
 turbo run build --force
 ```
+
+## 🚀 Releasing Plugins
+
+This repository uses per-plugin versioning with namespace@version tags (e.g., `ni@1.0.0`).
+
+### Quick Release
+
+Use the `/release` slash command in Claude Code:
+
+```
+/release
+```
+
+The command will guide you through:
+1. Selecting which plugin to release
+2. Choosing the new version (with semver suggestions)
+3. Updating version files and changelog
+4. Creating and pushing the release tag
+5. Monitoring the GitHub Actions workflow
+
+### Manual Release
+
+If you prefer to release manually:
+
+1. **Update version files** (3 files must be synchronized):
+   ```bash
+   # plugins/<plugin>/package.json
+   # plugins/<plugin>/.claude-plugin/plugin.json
+   # .claude-plugin/marketplace.json
+   ```
+
+2. **Update changelog**:
+   ```bash
+   # Add entry to plugins/<plugin>/CHANGELOG.md
+   ```
+
+3. **Create release commit**:
+   ```bash
+   git add plugins/<plugin>/package.json \
+           plugins/<plugin>/.claude-plugin/plugin.json \
+           .claude-plugin/marketplace.json \
+           plugins/<plugin>/CHANGELOG.md
+   git commit -m "chore(release): <plugin>@<version>"
+   ```
+
+4. **Create and push tag**:
+   ```bash
+   git tag -a "<plugin>@<version>" -m "Release <plugin>@<version>"
+   git push origin main
+   git push origin <plugin>@<version>
+   ```
+
+5. **Monitor release**:
+   - GitHub Actions will automatically build, test, and package the plugin
+   - A new release will be created at: `https://github.com/aryasaatvik/coding-agent-plugins/releases/tag/<plugin>@<version>`
+
+### Tag Format
+
+- **Plugin releases**: `<plugin-name>@<version>` (e.g., `ni@1.0.0`, `ni@1.1.0-beta.1`)
+- Each plugin is versioned independently
+- Supports full semantic versioning including pre-releases
+
+### Release Assets
+
+Each plugin release includes:
+- `<plugin-name>-plugin.tar.gz` - Plugin distribution tarball
+- `checksums.txt` - SHA256 checksums for verification
 
 ## 📝 License
 

@@ -13,6 +13,19 @@
         "turbo": "^2.6.1",
       },
     },
+    "packages/cli": {
+      "name": "coding-agent-plugins",
+      "version": "1.0.0",
+      "bin": {
+        "coding-agent-plugins": "./bin/cli.js",
+      },
+      "dependencies": {
+        "@clack/prompts": "^0.11.0",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+    },
     "plugins/ni": {
       "name": "@coding-agent-plugins/ni",
       "version": "1.0.0",
@@ -138,6 +151,8 @@
     "cli-width": ["cli-width@3.0.0", "", {}, "sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw=="],
 
     "clone": ["clone@1.0.4", "", {}, "sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg=="],
+
+    "coding-agent-plugins": ["coding-agent-plugins@workspace:packages/cli"],
 
     "color-convert": ["color-convert@2.0.1", "", { "dependencies": { "color-name": "~1.1.4" } }, "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ=="],
 

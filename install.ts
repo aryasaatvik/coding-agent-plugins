@@ -3,22 +3,14 @@
 /**
  * Coding Agent Plugins Installer
  *
- * Interactive installer for coding agent plugins (Claude Code & OpenCode)
+ * This is a convenience wrapper that runs the CLI package.
  *
- * Usage:
- *   bun install.ts                    # Interactive mode
- *   bun install.ts --all              # Install all plugins
- *   bun install.ts --plugins=ni       # Install specific plugins
- *   bun install.ts --claude-only      # Install for Claude Code only
- *   bun install.ts --opencode-only    # Install for OpenCode only
- *   bun install.ts --yes              # Skip confirmation
- *   bun install.ts --dry-run          # Preview changes without installing
+ * For published usage, use:
+ *   bunx coding-agent-plugins
  */
 
-import { run } from "./shared/installer/cli";
+import { $ } from "bun";
 
-// Run the installer
-run(process.argv.slice(2)).catch((error) => {
-  console.error("Fatal error:", error);
-  process.exit(1);
-});
+// Run the CLI package with all arguments
+const result = await $`bun packages/cli/bin/cli.js ${Bun.argv.slice(2)}`;
+process.exit(result.exitCode);
