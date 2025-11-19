@@ -1,6 +1,5 @@
 {
   "name": "coding-agent-plugins",
-  "version": "1.0.0",
   "description": "Collection of plugins for Claude Code and OpenCode",
   "author": "Saatvik Arya",
   "license": "MIT",
@@ -17,7 +16,7 @@
     "url": "https://github.com/aryasaatvik/coding-agent-plugins"
   },
   "scripts": {
-    "install-plugins": "bun install.ts",
+    "install-plugins": "bun packages/cli/bin/cli.js",
     "build": "turbo run build",
     "test": "turbo run test",
     "dev": "turbo run dev --parallel",
@@ -39,6 +38,7 @@
   "type": "module",
   "private": true,
   "workspaces": [
-    "plugins/*"
+    "plugins/*",
+    "packages/*"
   ]
 }

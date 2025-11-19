@@ -5,8 +5,7 @@
     "email": "aryasaatvik@gmail.com"
   },
   "metadata": {
-    "description": "Collection of plugins for Claude Code and OpenCode",
-    "version": "1.0.0"
+    "description": "Collection of plugins for Claude Code and OpenCode"
   },
   "plugins": [
     {

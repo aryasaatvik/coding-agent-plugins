@@ -1,34 +1,83 @@
-name: Release
+name: Release Plugin
 
 on:
   push:
     tags:
-      - 'v*'
+      - '*@*'  # Match namespace@version pattern (e.g., ni@1.0.0)
   workflow_dispatch:
+    inputs:
+      plugin:
+        description: 'Plugin name'
+        required: true
+      version:
+        description: 'Version (e.g., 1.0.0)'
+        required: true
 
 permissions:
   contents: write
 
 jobs:
-  get-plugins:
-    name: Get Plugin List
+  extract-and-validate:
+    name: Extract and Validate
     runs-on: ubuntu-latest
     outputs:
-      plugins: ${{ steps.get-plugins.outputs.plugins }}
+      plugin: ${{ steps.extract.outputs.plugin }}
+      version: ${{ steps.extract.outputs.version }}
+      tag: ${{ steps.extract.outputs.tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get plugin list from marketplace.json
-        id: get-plugins
+      - name: Extract plugin and version from tag
+        id: extract
         run: |
-          # Extract plugin names from marketplace.json
-          PLUGINS=$(jq -r '[.plugins[].name] | @json' .claude-plugin/marketplace.json)
-          echo "plugins=$PLUGINS" >> $GITHUB_OUTPUT
-          echo "Found plugins: $PLUGINS"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PLUGIN="${{ inputs.plugin }}"
+            VERSION="${{ inputs.version }}"
+            TAG="${PLUGIN}@${VERSION}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+
+            # Validate tag format: plugin@version
+            if [[ ! "$TAG" =~ ^[a-z0-9-]+@[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
+              echo "❌ Error: Invalid tag format '$TAG'"
+              echo "Expected format: <plugin-name>@<version> (e.g., ni@1.0.0)"
+              exit 1
+            fi
+
+            PLUGIN="${TAG%@*}"
+            VERSION="${TAG#*@}"
+          fi
+
+          echo "plugin=$PLUGIN" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+          echo "📦 Plugin: $PLUGIN"
+          echo "🏷️  Version: $VERSION"
+
+      - name: Verify plugin exists
+        run: |
+          if [ ! -d "plugins/${{ steps.extract.outputs.plugin }}" ]; then
+            echo "❌ Error: Plugin '${{ steps.extract.outputs.plugin }}' not found"
+            echo "Available plugins:"
+            ls -1 plugins/
+            exit 1
+          fi
+          echo "✓ Plugin directory found"
+
+      - name: Verify plugin in marketplace
+        run: |
+          PLUGIN_EXISTS=$(jq -r ".plugins[] | select(.name == \"${{ steps.extract.outputs.plugin }}\") | .name" .claude-plugin/marketplace.json)
+          if [ -z "$PLUGIN_EXISTS" ]; then
+            echo "❌ Error: Plugin '${{ steps.extract.outputs.plugin }}' not found in marketplace.json"
+            exit 1
+          fi
+          echo "✓ Plugin found in marketplace"
 
   build-and-test:
-    name: Build and Test
+    name: Build and Test ${{ needs.extract-and-validate.outputs.plugin }}
+    needs: extract-and-validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -42,26 +91,23 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run tests
-        run: bun run test
+      - name: Run tests for ${{ needs.extract-and-validate.outputs.plugin }}
+        run: bun run test --filter=@coding-agent-plugins/${{ needs.extract-and-validate.outputs.plugin }}
 
-      - name: Build all plugins
-        run: bun run build
+      - name: Build ${{ needs.extract-and-validate.outputs.plugin }}
+        run: bun run build --filter=@coding-agent-plugins/${{ needs.extract-and-validate.outputs.plugin }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: plugins/*/hooks/*.js
+          path: plugins/${{ needs.extract-and-validate.outputs.plugin }}/hooks/*.js
           retention-days: 1
 
-  package-plugins:
-    name: Package ${{ matrix.plugin }}
-    needs: [get-plugins, build-and-test]
+  package-plugin:
+    name: Package ${{ needs.extract-and-validate.outputs.plugin }}
+    needs: [extract-and-validate, build-and-test]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        plugin: ${{ fromJson(needs.get-plugins.outputs.plugins) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -75,111 +121,75 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: plugins/
+          path: plugins/${{ needs.extract-and-validate.outputs.plugin }}/hooks/
 
-      - name: Package plugin
-        run: bun scripts/package-plugin.ts ${{ matrix.plugin }}
+      - name: Package ${{ needs.extract-and-validate.outputs.plugin }}
+        run: bun scripts/package-plugin.ts ${{ needs.extract-and-validate.outputs.plugin }}
 
       - name: Upload plugin tarball
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.plugin }}-plugin
-          path: build/${{ matrix.plugin }}-plugin.tar.gz
-          retention-days: 1
-
-  create-collection:
-    name: Create Collection Tarball
-    needs: [build-and-test, package-plugins]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: plugins/
-
-      - name: Create collection tarball
-        run: |
-          mkdir -p build
-          tar -czf build/coding-agent-plugins.tar.gz \
-            install.ts \
-            shared/ \
-            plugins/ \
-            .claude-plugin/marketplace.json \
-            package.json \
-            README.md \
-            LICENSE \
-            CHANGELOG.md
-
-      - name: Upload collection tarball
-        uses: actions/upload-artifact@v4
-        with:
-          name: collection
-          path: build/coding-agent-plugins.tar.gz
+          name: ${{ needs.extract-and-validate.outputs.plugin }}-plugin
+          path: build/${{ needs.extract-and-validate.outputs.plugin }}-plugin.tar.gz
           retention-days: 1
 
   release:
     name: Create GitHub Release
-    needs: [get-plugins, package-plugins, create-collection]
+    needs: [extract-and-validate, package-plugin]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download all artifacts
+      - name: Download plugin artifact
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          name: ${{ needs.extract-and-validate.outputs.plugin }}-plugin
+          path: build/
 
-      - name: Prepare release files
-        run: |
-          mkdir -p build
-          # Copy all plugin tarballs
-          find artifacts -name "*.tar.gz" -exec cp {} build/ \;
-
-      - name: Generate checksums
+      - name: Generate checksum
         run: |
           cd build
           sha256sum *.tar.gz > checksums.txt
 
-      - name: Get version from tag
-        id: version
-        run: |
-          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
       - name: Extract changelog
         id: changelog
         run: |
-          if [ -f CHANGELOG.md ]; then
-            VERSION=${{ steps.version.outputs.tag }}
-            sed -n "/## \[${VERSION#v}\]/,/## \[/p" CHANGELOG.md | sed '$d' > /tmp/release-notes.md
+          PLUGIN="${{ needs.extract-and-validate.outputs.plugin }}"
+          VERSION="${{ needs.extract-and-validate.outputs.version }}"
+
+          # Check for plugin-specific changelog first
+          if [ -f "plugins/$PLUGIN/CHANGELOG.md" ]; then
+            CHANGELOG_FILE="plugins/$PLUGIN/CHANGELOG.md"
+            SECTION_HEADER="## \[${VERSION}\]"
+          else
+            # Fall back to root changelog with plugin@ prefix
+            CHANGELOG_FILE="CHANGELOG.md"
+            SECTION_HEADER="## \[${PLUGIN}@${VERSION}\]"
+          fi
+
+          if [ -f "$CHANGELOG_FILE" ]; then
+            sed -n "/${SECTION_HEADER}/,/## \[/p" "$CHANGELOG_FILE" | sed '$d' > /tmp/release-notes.md
             if [ -s /tmp/release-notes.md ]; then
               echo "notes<<EOF" >> $GITHUB_OUTPUT
               cat /tmp/release-notes.md >> $GITHUB_OUTPUT
               echo "EOF" >> $GITHUB_OUTPUT
             else
-              echo "notes=Release $VERSION" >> $GITHUB_OUTPUT
+              echo "notes=Release ${{ needs.extract-and-validate.outputs.tag }}" >> $GITHUB_OUTPUT
             fi
           else
-            echo "notes=Release ${{ steps.version.outputs.tag }}" >> $GITHUB_OUTPUT
+            echo "notes=Release ${{ needs.extract-and-validate.outputs.tag }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ needs.extract-and-validate.outputs.tag }}
+          name: ${{ needs.extract-and-validate.outputs.plugin }} v${{ needs.extract-and-validate.outputs.version }}
           files: build/*
           body: ${{ steps.changelog.outputs.notes }}
           draft: false
-          prerelease: ${{ contains(steps.version.outputs.tag, '-') }}
+          prerelease: ${{ contains(needs.extract-and-validate.outputs.version, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
