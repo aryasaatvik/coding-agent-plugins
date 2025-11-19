@@ -107,17 +107,31 @@ export class PluginInstaller {
         };
       }
 
-      const opencodeDir = this.platforms.openCode.path!;
-      const pluginDir = join(opencodeDir, "plugin");
+      const opencodeConfigDir = this.platforms.openCode.path!;
+      const opencodeCacheDir = join(process.env.HOME!, ".cache", "opencode");
+      const repoCacheDir = join(opencodeCacheDir, "coding-agent-plugins");
+
+      const pluginDir = join(opencodeConfigDir, "plugin");
       const pluginFile = join(pluginDir, `${this.plugin.name}-plugin.js`);
 
-      // Ensure plugin directory exists
+      // Ensure directories exist
       await $`mkdir -p ${pluginDir}`.quiet();
+      await $`mkdir -p ${opencodeCacheDir}`.quiet();
 
-      // Copy the built plugin file
-      const sourceFile = join("plugins", this.plugin.name, "opencode", `${this.plugin.name}-plugin.js`);
+      // Clone/update repository in cache
+      if (existsSync(repoCacheDir) && existsSync(join(repoCacheDir, ".git"))) {
+        // Update existing repository
+        await $`cd ${repoCacheDir} && git pull origin main`.quiet();
+      } else {
+        // Fresh clone
+        await $`rm -rf ${repoCacheDir}`.quiet();
+        await $`git clone https://github.com/aryasaatvik/coding-agent-plugins.git ${repoCacheDir}`.quiet();
+      }
+
+      // Copy the built plugin file from cache
+      const sourceFile = join(repoCacheDir, "plugins", this.plugin.name, "opencode", `${this.plugin.name}-plugin.js`);
       if (!existsSync(sourceFile)) {
-        throw new Error(`Plugin file not found: ${sourceFile}`);
+        throw new Error(`Plugin file not found in repository: ${sourceFile}`);
       }
 
       await $`cp ${sourceFile} ${pluginFile}`.quiet();
