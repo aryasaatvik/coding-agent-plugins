@@ -1,6 +1,6 @@
 {
   "name": "coding-agent-plugins",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "CLI for managing Claude Code and OpenCode plugins",
   "type": "module",
   "bin": {
