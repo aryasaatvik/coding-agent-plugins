@@ -1,0 +1,22 @@
+{
+  "name": "@coding-agent-plugins/{{ dashCase name }}",
+  "version": "1.0.0",
+  "description": "{{ description }}",
+  "author": "Saatvik Arya",
+  "license": "MIT",
+  "keywords": [],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:claude": "bun build ./claude-code/{{ dashCase name }}.ts --target bun --format esm --outfile ./hooks/{{ dashCase name }}-hook.js",
+    "build:opencode": "bun build ./opencode/{{ dashCase name }}-plugin.ts --target bun --format esm --outfile ./opencode/{{ dashCase name }}-plugin.js",
+    "build": "bun run build:claude && bun run build:opencode",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "^1.0.72"
+  }
+}

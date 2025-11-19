@@ -1,0 +1,76 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalDependencies": [
+    "**/.env",
+    "**/.env.*",
+    ".gitignore",
+    "tsconfig.json",
+    "bunfig.toml"
+  ],
+  "globalEnv": [
+    "NODE_ENV",
+    "CLAUDE_PLUGIN_ROOT"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "hooks/**/*.js",
+        "opencode/**/*.js",
+        "!**/*.ts"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "shared/**/*.ts",
+        "claude-code/**/*.ts",
+        "opencode/**/*.ts",
+        "!**/*.test.ts",
+        "!tests/**"
+      ],
+      "cache": true
+    },
+    "build:claude": {
+      "outputs": ["hooks/**/*.js"],
+      "inputs": [
+        "shared/**/*.ts",
+        "claude-code/**/*.ts"
+      ],
+      "cache": true
+    },
+    "build:opencode": {
+      "outputs": ["opencode/**/*.js"],
+      "inputs": [
+        "shared/**/*.ts",
+        "opencode/**/*.ts"
+      ],
+      "cache": true
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!README.md",
+        "!CHANGELOG.md"
+      ],
+      "cache": true
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "outputs": [],
+      "cache": true
+    },
+    "check-types": {
+      "outputs": [],
+      "cache": true
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

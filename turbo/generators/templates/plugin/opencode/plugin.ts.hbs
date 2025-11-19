@@ -1,0 +1,37 @@
+/**
+ * {{ dashCase name }} for OpenCode
+ * {{ description }}
+ */
+
+import type { Plugin } from "@opencode-ai/plugin";
+
+export const {{ pascalCase name }}Plugin: Plugin = async ({ directory }) => {
+  return {
+    "tool.execute.before": async (input, output) => {
+      // Only process bash/shell commands
+      if (input.tool !== "bash" && input.tool !== "shell") {
+        return;
+      }
+
+      const command = output.args?.command;
+      if (!command || typeof command !== "string") {
+        return;
+      }
+
+      try {
+        // TODO: Add your plugin logic here
+        // For now, just allow the command as-is
+        console.log(`[{{ dashCase name }}] Processing command: ${command}`);
+
+        // You can modify the command by mutating output.args
+        // output.args.command = modifiedCommand;
+
+      } catch (error) {
+        console.error(`[{{ dashCase name }}] Error:`, error);
+        // On error, allow the original command to proceed
+      }
+    },
+  };
+};
+
+export default {{ pascalCase name }}Plugin;

@@ -1,0 +1,76 @@
+#!/usr/bin/env bun
+
+/**
+ * {{ dashCase name }} for Claude Code
+ * {{ description }}
+ */
+
+interface HookInput {
+  session_id: string;
+  transcript_path: string;
+  cwd: string;
+  permission_mode: string;
+  hook_event_name: string;
+  tool_name: string;
+  tool_input: {
+    command?: string;
+    [key: string]: any;
+  };
+}
+
+interface HookOutput {
+  hookSpecificOutput?: {
+    hookEventName: string;
+    permissionDecision: "allow" | "deny" | "ask";
+    permissionDecisionReason: string;
+    updatedInput?: {
+      command: string;
+      [key: string]: any;
+    };
+  };
+}
+
+async function main() {
+  try {
+    // Read input from stdin
+    const input: HookInput = await Bun.stdin.json();
+
+    // Extract the command
+    const command = input.tool_input.command;
+
+    if (!command) {
+      // No command to process, allow as-is
+      const output: HookOutput = {
+        hookSpecificOutput: {
+          hookEventName: input.hook_event_name,
+          permissionDecision: "allow",
+          permissionDecisionReason: "No command to process",
+        },
+      };
+      console.log(JSON.stringify(output));
+      return;
+    }
+
+    // TODO: Add your plugin logic here
+    // For now, just allow the command as-is
+    const output: HookOutput = {
+      hookSpecificOutput: {
+        hookEventName: input.hook_event_name,
+        permissionDecision: "allow",
+        permissionDecisionReason: "Command processed by {{ dashCase name }}",
+        updatedInput: {
+          ...input.tool_input,
+          command: command, // Replace with your modified command
+        },
+      },
+    };
+
+    console.log(JSON.stringify(output));
+  } catch (error) {
+    // On error, allow the original command to proceed
+    console.error(`Error in {{ dashCase name }}:`, error);
+    process.exit(1);
+  }
+}
+
+main();

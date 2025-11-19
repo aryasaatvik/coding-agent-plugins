@@ -1,0 +1,147 @@
+# {{ dashCase name }}
+
+> {{ description }}
+
+## ✨ Features
+
+- 🔌 **Dual Support** - Works with both Claude Code and OpenCode
+- ⚡ **Fast** - Bundled JavaScript with Bun runtime
+- 🛠️ **Configurable** - Optional configuration for advanced use cases
+- 📦 **Zero Config** - Works out of the box with sensible defaults
+
+## 📋 Prerequisites
+
+- **[bun](https://bun.sh)** - Required for building and running the plugin
+  ```bash
+  curl -fsSL https://bun.sh/install | bash
+  ```
+
+## 🚀 Installation
+
+### Via coding-agent-plugins Installer
+
+The easiest way to install:
+
+```bash
+# Clone the repository
+git clone https://github.com/aryasaatvik/coding-agent-plugins.git
+cd coding-agent-plugins
+
+# Run the installer and select {{ dashCase name }}
+bun install.ts
+
+# Or install directly
+bun install.ts --plugins={{ dashCase name }}
+```
+
+### Building from Source
+
+```bash
+cd plugins/{{ dashCase name }}
+bun install
+bun run build
+```
+
+## 🎯 How It Works
+
+[Add description of how your plugin works here]
+
+## ⚙️ Configuration
+
+Create a `.{{ dashCase name }}.json` file in your project root or `~/.config/{{ dashCase name }}.json` globally:
+
+```json
+{
+  "enabled": true
+}
+```
+
+### Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | boolean | `true` | Enable/disable the plugin |
+
+### Configuration Priority
+
+1. Project-level: `.{{ dashCase name }}.json` in project root
+2. Global-level: `~/.config/{{ dashCase name }}.json`
+3. Default values
+
+## 🧪 Testing
+
+```bash
+# Run tests
+bun test
+
+# Watch mode
+bun test --watch
+
+# Coverage
+bun test --coverage
+```
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+plugins/{{ dashCase name }}/
+├── .claude-plugin/
+│   └── plugin.json          # Plugin metadata
+├── claude-code/
+│   └── {{ dashCase name }}.ts                # Claude Code hook implementation
+├── opencode/
+│   ├── {{ dashCase name }}-plugin.ts         # OpenCode plugin source
+│   └── {{ dashCase name }}-plugin.js         # Built OpenCode plugin
+├── shared/
+│   └── types.ts             # TypeScript types
+├── hooks/
+│   ├── hooks.json           # Hook registration
+│   └── {{ dashCase name }}-hook.js           # Built Claude Code hook
+├── tests/
+│   └── {{ dashCase name }}.test.ts
+├── README.md
+└── package.json
+```
+
+### Build Commands
+
+```bash
+# Build both platforms
+bun run build
+
+# Build Claude Code only
+bun run build:claude
+
+# Build OpenCode only
+bun run build:opencode
+```
+
+## 🐛 Troubleshooting
+
+### Plugin Not Working
+
+1. Enable debug mode in config
+2. Check Claude Code logs: `~/.claude/logs/`
+3. For OpenCode: Check console output
+
+### Build Errors
+
+1. Ensure Bun is installed: `bun --version`
+2. Clean and rebuild: `rm -rf hooks/*.js opencode/*.js && bun run build`
+3. Check for TypeScript errors: `bun run build`
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see the [main repository](https://github.com/aryasaatvik/coding-agent-plugins) for contribution guidelines.
+
+## 📝 License
+
+MIT © Saatvik Arya
+
+## 🔗 Links
+
+- [Main Repository](https://github.com/aryasaatvik/coding-agent-plugins)
+- [Claude Code](https://claude.ai/code)
+- [OpenCode](https://opencode.ai)
