@@ -4,14 +4,14 @@
   "description": "CLI for managing Claude Code and OpenCode plugins",
   "type": "module",
   "bin": {
-    "coding-agent-plugins": "./bin/cli.js"
+    "coding-agent-plugins": "./dist/cli.js"
   },
   "files": [
-    "bin/",
-    "src/",
-    ".claude-plugin/"
+    "dist/"
   ],
   "scripts": {
+    "build": "bun scripts/build.ts",
+    "prepublishOnly": "bun run build",
     "dev": "bun run bin/cli.js",
     "test": "echo \"No tests yet\" && exit 0"
   },

@@ -24,11 +24,7 @@ import {
 } from "../shared/ui.js";
 import { PluginInstaller } from "../shared/installer.js";
 import { log } from "@clack/prompts";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import marketplace from "../../.claude-plugin/marketplace.json";
 
 /**
  * Install command handler
@@ -70,8 +66,7 @@ export async function install(args: string[]): Promise<void> {
     process.exit(1);
   }
 
-  // Load marketplace.json
-  const marketplace = await loadMarketplace();
+  // marketplace.json is imported at top of file
 
   // Determine which plugins to install
   let selectedPlugins: string[];
@@ -189,18 +184,3 @@ function parseCLIArgs(args: string[]): CLIOptions {
   }
 }
 
-/**
- * Load marketplace configuration
- */
-async function loadMarketplace(): Promise<MarketplaceConfig> {
-  try {
-    // Path to marketplace.json in the CLI package
-    const marketplacePath = join(__dirname, "../../.claude-plugin/marketplace.json");
-    const file = Bun.file(marketplacePath);
-    const marketplace: MarketplaceConfig = await file.json();
-    return marketplace;
-  } catch (error) {
-    console.error("Error loading marketplace.json:", error);
-    process.exit(1);
-  }
-}

@@ -5,7 +5,7 @@
  */
 
 import { commands } from "./commands/index.js";
-import { version } from "../package.json" with { type: "json" };
+import { version } from "../package.json";
 
 /**
  * Show help message

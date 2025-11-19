@@ -4,6 +4,7 @@ bun.lockb
 
 # Build outputs
 *.log
+packages/cli/dist/
 
 # OS files
 .DS_Store
