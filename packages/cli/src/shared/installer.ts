@@ -82,6 +82,9 @@ export class PluginInstaller {
       // Update known_marketplaces.json
       await this.updateKnownMarketplaces(marketplaceDir);
 
+      // Enable plugin in settings.json
+      await this.updateSettings();
+
       return {
         plugin: this.plugin.name,
         platform: "claude",
@@ -217,6 +220,30 @@ export class PluginInstaller {
 
     // Write back
     await Bun.write(marketplacesJson, JSON.stringify(marketplaces, null, 2));
+  }
+
+  private async updateSettings(): Promise<void> {
+    const claudeDir = this.platforms.claudeCode.path!;
+    const settingsJson = join(claudeDir, "settings.json");
+
+    // Read or create settings.json
+    let settings: any = {};
+    if (existsSync(settingsJson)) {
+      const file = Bun.file(settingsJson);
+      settings = await file.json();
+    }
+
+    // Ensure enabledPlugins object exists
+    if (!settings.enabledPlugins) {
+      settings.enabledPlugins = {};
+    }
+
+    // Enable the plugin with format: pluginName@marketplaceName
+    const pluginKey = `${this.plugin.name}@coding-agent-plugins`;
+    settings.enabledPlugins[pluginKey] = true;
+
+    // Write back
+    await Bun.write(settingsJson, JSON.stringify(settings, null, 2));
   }
 
   async rollback(): Promise<void> {
