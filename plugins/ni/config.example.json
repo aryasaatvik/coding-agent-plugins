@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "enabled": true,
+  "dryRun": false,
+  "debug": false,
+  "disabledPackageManagers": [],
+  "_comments": {
+    "enabled": "Set to false to completely disable the plugin",
+    "dryRun": "Set to true to see what would be translated without actually translating",
+    "debug": "Set to true to enable debug logging (useful for troubleshooting)",
+    "disabledPackageManagers": "List of package managers to NOT translate (e.g., ['npm', 'yarn'])"
+  },
+  "_examples": {
+    "disable_npm_only": {
+      "description": "Only translate yarn, pnpm, and bun commands, leave npm alone",
+      "disabledPackageManagers": ["npm"]
+    },
+    "dry_run_mode": {
+      "description": "See what would be translated without actually translating",
+      "dryRun": true
+    },
+    "debug_mode": {
+      "description": "Enable debug logging to see what's happening",
+      "debug": true
+    }
+  }
+}

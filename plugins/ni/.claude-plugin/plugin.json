@@ -1,0 +1,23 @@
+{
+  "name": "ni-plugin",
+  "version": "1.5.0",
+  "description": "Automatically translates package manager commands (npm/yarn/pnpm/bun) to use ni for universal package manager detection",
+  "author": {
+    "name": "Saatvik Arya",
+    "email": "aryasaatvik@gmail.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/aryasaatvik/ni-plugin",
+  "homepage": "https://github.com/aryasaatvik/ni-plugin",
+  "keywords": [
+    "ni",
+    "package-manager",
+    "npm",
+    "yarn",
+    "pnpm",
+    "bun",
+    "universal",
+    "translation",
+    "automation"
+  ]
+}

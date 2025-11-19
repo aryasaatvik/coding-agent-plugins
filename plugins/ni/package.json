@@ -1,0 +1,29 @@
+{
+  "name": "@coding-agent-plugins/ni",
+  "version": "1.0.0",
+  "description": "Universal package manager plugin - automatically translates npm/yarn/pnpm/bun commands to use ni",
+  "author": "Saatvik Arya",
+  "license": "MIT",
+  "keywords": [
+    "ni",
+    "package-manager",
+    "npm",
+    "yarn",
+    "pnpm",
+    "bun"
+  ],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:claude": "bun build ./claude-code/ni.ts --target bun --format esm --outfile ./hooks/ni-hook.js",
+    "build:opencode": "bun build ./opencode/ni-plugin.ts --target bun --format esm --outfile ./opencode/ni-plugin.js",
+    "build": "bun run build:claude && bun run build:opencode",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "^1.0.72"
+  }
+}

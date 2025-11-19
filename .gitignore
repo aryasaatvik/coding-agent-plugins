@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build outputs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local config
+config.json
+.ni-plugin.json
+
+.claude/settings.local.json
+
+# Turborepo
+.turbo

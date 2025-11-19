@@ -1,0 +1,25 @@
+[test]
+# Coverage settings
+coverage = true
+coverageSkipTestFiles = true
+
+# Test execution
+bail = false
+timeout = 5000
+
+# Coverage directories
+coverageDir = "./coverage"
+
+# Files to include in coverage
+coverageInclude = [
+  "core/**/*.ts",
+  "claude-code/**/*.ts",
+  "opencode/**/*.ts",
+]
+
+# Files to exclude from coverage
+coverageExclude = [
+  "**/*.test.ts",
+  "**/tests/**",
+  "**/node_modules/**",
+]
