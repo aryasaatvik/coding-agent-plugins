@@ -4,24 +4,19 @@
 
 export interface PluginConfig {
   name: string;
-  path: string;
   description: string;
-  version: string;
-  author: { name: string; email?: string };
-  license: string;
+  source: string;
   category: string;
-  tags: string[];
-  platforms: ("claude" | "opencode")[];
-  homepage?: string;
+  version?: string;
+  author?: { name: string; email?: string };
 }
 
 export interface MarketplaceConfig {
+  $schema?: string;
   name: string;
+  version: string;
+  description: string;
   owner: { name: string; email: string };
-  metadata: {
-    description: string;
-    version: string;
-  };
   plugins: PluginConfig[];
 }
 

@@ -25,7 +25,7 @@ import {
 } from "../shared/ui.js";
 import { PluginInstaller } from "../shared/installer.js";
 import { log } from "@clack/prompts";
-import marketplace from "../../.claude-plugin/marketplace.json";
+import marketplace from "../../../../.claude-plugin/marketplace.json";
 
 /**
  * Install command handler
