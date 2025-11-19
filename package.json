@@ -1,5 +1,6 @@
 {
   "name": "coding-agent-plugins",
+  "version": "1.0.0",
   "description": "Collection of plugins for Claude Code and OpenCode",
   "author": "Saatvik Arya",
   "license": "MIT",

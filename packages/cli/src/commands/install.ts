@@ -9,6 +9,7 @@ import type {
   CLIOptions,
   MarketplaceConfig,
   InstallResult,
+  PluginConfig,
 } from "../shared/types.js";
 import { detectPlatforms, checkDependencies } from "../shared/detector.js";
 import {
@@ -79,7 +80,7 @@ export async function install(args: string[]): Promise<void> {
     selectedPlugins = options.plugins;
   } else {
     // Interactive selection
-    selectedPlugins = await showPluginSelector(marketplace.plugins);
+    selectedPlugins = await showPluginSelector(marketplace.plugins as PluginConfig[]);
   }
 
   // Filter to available plugins
@@ -121,7 +122,7 @@ export async function install(args: string[]): Promise<void> {
   log.info("Installing plugins...");
   const allResults: InstallResult[] = [];
 
-  for (const plugin of pluginsToInstall) {
+  for (const plugin of pluginsToInstall as PluginConfig[]) {
     const spinner = createSpinner(`Installing ${plugin.name}...`);
     spinner.start(`Installing ${plugin.name}...`);
 
