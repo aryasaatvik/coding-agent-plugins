@@ -36,6 +36,24 @@ export function translateCommand(command: string, config: Config = {}): string |
     return null;
   }
 
+  // Don't translate workspace/filter commands - ni doesn't support them
+  const allParts = [action, ...args];
+  const hasWorkspaceFlag = allParts.some(
+    (part) =>
+      part === "--filter" ||
+      part === "-F" ||
+      part === "--workspace" ||
+      part === "-w" ||
+      part === "workspace" || // yarn workspace command
+      part.startsWith("--filter=") ||
+      part.startsWith("-F=") ||
+      part.startsWith("--workspace=") ||
+      part.startsWith("-w=")
+  );
+  if (hasWorkspaceFlag) {
+    return null;
+  }
+
   const argsStr = args.join(" ");
 
   // Handle npx/bunx - always translate to nlx

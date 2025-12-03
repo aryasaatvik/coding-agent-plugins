@@ -361,3 +361,37 @@ describe("translate function", () => {
     });
   });
 });
+
+describe("workspace/filter flags", () => {
+  test("pnpm --filter should not be translated", () => {
+    expect(translateCommand("pnpm --filter @fanbeam/web typecheck")).toBeNull();
+  });
+
+  test("pnpm run --filter should not be translated", () => {
+    expect(translateCommand("pnpm run --filter @pkg build")).toBeNull();
+  });
+
+  test("pnpm -F should not be translated", () => {
+    expect(translateCommand("pnpm -F @pkg build")).toBeNull();
+  });
+
+  test("pnpm --filter= syntax should not be translated", () => {
+    expect(translateCommand("pnpm run --filter=@pkg build")).toBeNull();
+  });
+
+  test("yarn workspace should not be translated", () => {
+    expect(translateCommand("yarn workspace @pkg build")).toBeNull();
+  });
+
+  test("npm --workspace should not be translated", () => {
+    expect(translateCommand("npm run build --workspace=@pkg")).toBeNull();
+  });
+
+  test("npm -w should not be translated", () => {
+    expect(translateCommand("npm run build -w @pkg")).toBeNull();
+  });
+
+  test("bun --filter should not be translated", () => {
+    expect(translateCommand("bun --filter @pkg build")).toBeNull();
+  });
+});

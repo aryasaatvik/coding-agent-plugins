@@ -1,6 +1,6 @@
 {
   "name": "@coding-agent-plugins/ni",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Universal package manager plugin - automatically translates npm/yarn/pnpm/bun commands to use ni",
   "author": "Saatvik Arya",
   "license": "MIT",

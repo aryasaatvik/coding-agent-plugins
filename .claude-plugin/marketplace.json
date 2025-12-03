@@ -10,7 +10,7 @@
     {
       "name": "ni",
       "description": "Universal package manager - automatically translates npm/yarn/pnpm/bun commands to use ni",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Saatvik Arya",
         "email": "aryasaatvik@gmail.com"
