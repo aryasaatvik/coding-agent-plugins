@@ -1,0 +1,18 @@
+{
+  "description": "Nudges `git worktree add` toward `wt new`, which syncs gitignored files and installs dependencies",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git worktree add*)",
+            "command": "bun ${CLAUDE_PLUGIN_ROOT}/hooks/wt-hook.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

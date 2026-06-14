@@ -1,0 +1,27 @@
+{
+  "name": "@coding-agent-plugins/wt",
+  "version": "1.0.0",
+  "description": "Nudges git worktree add toward the wt CLI (syncs gitignored files + installs deps)",
+  "author": "Saatvik Arya",
+  "license": "MIT",
+  "keywords": [
+    "wt",
+    "git",
+    "worktree",
+    "git-worktree"
+  ],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:claude": "bun build ./claude-code/wt.ts --target bun --format esm --outfile ./hooks/wt-hook.js",
+    "build:opencode": "bun build ./opencode/wt-plugin.ts --target bun --format esm --outfile ./opencode/wt-plugin.js",
+    "build": "bun run build:claude && bun run build:opencode",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "^1.0.72"
+  }
+}

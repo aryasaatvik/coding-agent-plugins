@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "enabled": true,
+  "dryRun": false,
+  "debug": false,
+  "defaultBase": "main",
+  "_comments": {
+    "enabled": "Set to false to completely disable the plugin",
+    "dryRun": "Set to true to advise (systemMessage) instead of blocking the command",
+    "debug": "Set to true to enable debug logging (useful for troubleshooting)",
+    "defaultBase": "Base branch wt creates new branches from; mirrors `wt new <branch> [base]`"
+  },
+  "_examples": {
+    "soft_nudge": {
+      "description": "Suggest wt but never block git worktree add",
+      "dryRun": true
+    },
+    "different_default_base": {
+      "description": "Repos whose primary branch is develop",
+      "defaultBase": "develop"
+    }
+  }
+}

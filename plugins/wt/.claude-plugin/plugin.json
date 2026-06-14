@@ -1,0 +1,20 @@
+{
+  "name": "wt-plugin",
+  "version": "1.0.0",
+  "description": "Nudges `git worktree add` toward the `wt` CLI, which syncs gitignored files and installs dependencies in new worktrees",
+  "author": {
+    "name": "Saatvik Arya",
+    "email": "aryasaatvik@gmail.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/aryasaatvik/coding-agent-plugins",
+  "homepage": "https://github.com/aryasaatvik/wt",
+  "keywords": [
+    "wt",
+    "git",
+    "worktree",
+    "git-worktree",
+    "automation",
+    "nudge"
+  ]
+}
