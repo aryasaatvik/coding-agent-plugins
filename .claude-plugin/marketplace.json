@@ -17,6 +17,17 @@
       },
       "source": "./plugins/ni",
       "category": "development"
+    },
+    {
+      "name": "wt",
+      "description": "Nudges git worktree add toward the wt CLI (syncs gitignored files + installs deps)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Saatvik Arya",
+        "email": "aryasaatvik@gmail.com"
+      },
+      "source": "./plugins/wt",
+      "category": "development"
     }
   ]
 }
