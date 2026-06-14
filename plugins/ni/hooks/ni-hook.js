@@ -71,6 +71,11 @@ function translateCommand(command, config = {}) {
   if (config.disabledPackageManagers?.includes(pm)) {
     return null;
   }
+  const allParts = [action, ...args];
+  const hasWorkspaceFlag = allParts.some((part) => part === "--filter" || part === "-F" || part === "--workspace" || part === "-w" || part === "workspace" || part.startsWith("--filter=") || part.startsWith("-F=") || part.startsWith("--workspace=") || part.startsWith("-w="));
+  if (hasWorkspaceFlag) {
+    return null;
+  }
   const argsStr = args.join(" ");
   if (pm === "npx" || pm === "bunx") {
     return `nlx ${action} ${argsStr}`.trim();
