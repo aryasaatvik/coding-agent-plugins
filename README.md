@@ -17,6 +17,18 @@ Universal package manager - automatically translates npm/yarn/pnpm/bun commands 
 
 ---
 
+### [wt-plugin](plugins/wt/) v1.0.0
+
+Nudges `git worktree add` toward the [`wt`](https://github.com/aryasaatvik/wt) CLI, which syncs gitignored files and installs dependencies in new worktrees.
+
+**Platforms:** Claude Code, OpenCode
+**Category:** Development
+**Pairs with:** [`wt`](https://github.com/aryasaatvik/wt) — the standalone worktree helper this plugin promotes
+
+[View Documentation →](plugins/wt/README.md)
+
+---
+
 _More plugins coming soon!_
 
 ## 🚀 Quick Start
