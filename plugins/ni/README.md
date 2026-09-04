@@ -55,7 +55,7 @@ bun run build
 
 ## 🎯 How It Works
 
-The plugin intercepts Bash commands before execution and translates package manager commands:
+The plugin intercepts shell commands before execution and translates package manager commands. OpenCode 2 only — V1 is not supported.
 
 **Example Translations:**
 
