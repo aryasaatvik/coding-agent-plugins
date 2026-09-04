@@ -48,8 +48,7 @@ describe("OpenCode plugin integration", () => {
   test("plugin blocks git worktree add with a wt suggestion", async () => {
     const { handler, cleanup } = await loadPlugin();
     const input = { command: "git worktree add -b feature/x ../x main" };
-    expect(handler({ tool: "shell", input })).rejects.toThrow(/wt-plugin/);
-    expect(handler({ tool: "shell", input })).rejects.toThrow(/wt new/);
+    await expect(handler({ tool: "shell", input })).rejects.toThrow(/wt-plugin.*wt new/);
     await cleanup();
   });
 
