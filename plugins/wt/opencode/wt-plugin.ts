@@ -5,23 +5,9 @@
  * in `tool.execute.before`, so we throw with the wt suggestion as the message.
  */
 
+import type { Plugin } from "@opencode-ai/plugin";
 import { analyzeCommand } from "../shared/translator";
 import { loadConfig } from "../shared/config";
-
-type ToolExecuteBefore = {
-  tool: string;
-  input: unknown;
-};
-
-type PluginContext = {
-  location: { directory: string };
-  tool: {
-    hook: (
-      name: "execute.before",
-      callback: (event: ToolExecuteBefore) => Promise<void> | void,
-    ) => Promise<{ dispose: () => Promise<void> }>;
-  };
-};
 
 function shellCommand(input: unknown): string | undefined {
   if (typeof input !== "object" || input === null) {
@@ -33,7 +19,7 @@ function shellCommand(input: unknown): string | undefined {
 
 export default {
   id: "wt-plugin",
-  setup: async (ctx: PluginContext) => {
+  setup: async (ctx) => {
     const registration = await ctx.tool.hook("execute.before", async (event) => {
       if (event.tool !== "shell") {
         return;
@@ -77,4 +63,4 @@ export default {
 
     return () => registration.dispose();
   },
-};
+} satisfies Plugin.Plugin;
