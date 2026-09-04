@@ -129,20 +129,28 @@ async function loadConfig(cwd) {
 }
 
 // opencode/wt-plugin.ts
-var WtPlugin = async ({ directory }) => {
-  return {
-    "tool.execute.before": async (input, output) => {
-      if (input.tool !== "bash" && input.tool !== "shell") {
+function shellCommand(input) {
+  if (typeof input !== "object" || input === null) {
+    return;
+  }
+  const command = input.command;
+  return typeof command === "string" ? command : undefined;
+}
+var wt_plugin_default = {
+  id: "wt-plugin",
+  setup: async (ctx) => {
+    const registration = await ctx.tool.hook("execute.before", async (event) => {
+      if (event.tool !== "shell") {
         return;
       }
-      const command = output.args?.command;
-      if (!command || typeof command !== "string") {
+      const command = shellCommand(event.input);
+      if (!command) {
         return;
       }
       let result;
       let config;
       try {
-        config = await loadConfig(directory);
+        config = await loadConfig(ctx.location.directory);
         if (!config.enabled) {
           return;
         }
@@ -162,9 +170,10 @@ var WtPlugin = async ({ directory }) => {
         return;
       }
       throw new Error(`\uD83C\uDF33 wt-plugin: ${result.reason}`);
-    }
-  };
+    });
+    return () => registration.dispose();
+  }
 };
 export {
-  WtPlugin
+  wt_plugin_default as default
 };

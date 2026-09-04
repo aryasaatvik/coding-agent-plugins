@@ -38,7 +38,7 @@ the real worktree path.
 | `git worktree add ../x-feature` | `wt new x-feature` |
 
 - **Claude Code** — a `PreToolUse` hook returns `permissionDecision: "deny"` with the suggestion as the reason.
-- **OpenCode** — a `tool.execute.before` hook throws with the suggestion (OpenCode aborts the tool and shows the message).
+- **OpenCode 2** — a `tool.execute.before` hook on the `shell` tool throws with the suggestion (OpenCode aborts the tool and shows the message). V1 is not supported.
 
 ## ⚙️ Configuration
 

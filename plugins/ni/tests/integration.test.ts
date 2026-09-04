@@ -1,7 +1,6 @@
-import { describe, test, expect, beforeAll } from "bun:test";
+import { describe, test, expect } from "bun:test";
 import { spawn } from "bun";
 import { join } from "path";
-import { existsSync, copyFileSync } from "fs";
 
 const CLAUDE_HOOK = join(import.meta.dir, "../claude-code/ni.ts");
 
@@ -224,137 +223,66 @@ describe("Claude Code hook integration", () => {
 });
 
 describe("OpenCode plugin integration", () => {
-  const isWindows = process.platform === "win32";
-  const OPENCODE_EXECUTABLE = join(import.meta.dir, "../opencode/ni" + (isWindows ? ".exe" : ""));
-
-  beforeAll(async () => {
-    // Build the executable if it doesn't exist
-    if (!existsSync(OPENCODE_EXECUTABLE)) {
-      console.log("Building ni executable for OpenCode tests...");
-
-      // Don't add .exe to outfile on Windows - Bun adds it automatically
-      const outfile = join(import.meta.dir, "../opencode/ni");
-
-      const buildProc = spawn({
-        cmd: ["bun", "build", join(import.meta.dir, "../claude-code/ni.ts"), "--compile", "--outfile", outfile],
-        stdout: "pipe",
-        stderr: "pipe",
-      });
-
-      const exitCode = await buildProc.exited;
-
-      if (exitCode !== 0) {
-        const stderr = await new Response(buildProc.stderr).text();
-        throw new Error(`Failed to build executable: ${stderr}`);
-      }
-
-      console.log("✓ Executable built successfully");
-    }
-  });
-
-  test("plugin exports correct structure", async () => {
+  async function loadPlugin() {
     const module = await import("../opencode/ni-plugin.ts");
-
-    expect(module).toHaveProperty("NiPlugin");
-    expect(typeof module.NiPlugin).toBe("function");
-  });
-
-  test("plugin initializes correctly", async () => {
-    const { NiPlugin } = await import("../opencode/ni-plugin.ts");
-
-    const plugin = await NiPlugin({
-      project: "test-project",
-      directory: "/tmp",
-      worktree: "/tmp",
-      client: {} as any,
-      $: {} as any,
-    });
-
-    expect("tool.execute.before" in plugin).toBe(true);
-    expect(typeof plugin["tool.execute.before"]).toBe("function");
-  });
-
-  test("plugin modifies bash commands", async () => {
-    const { NiPlugin } = await import("../opencode/ni-plugin.ts");
-
-    const plugin = await NiPlugin({
-      project: "test-project",
-      directory: "/tmp",
-      worktree: "/tmp",
-      client: {} as any,
-      $: {} as any,
-    });
-
-    const input = {
-      tool: "bash",
+    const plugin = module.default as {
+      id: string;
+      setup: (ctx: {
+        location: { directory: string };
+        tool: {
+          hook: (
+            name: "execute.before",
+            callback: (event: { tool: string; input: unknown }) => Promise<void> | void,
+          ) => Promise<{ dispose: () => Promise<void> }>;
+        };
+      }) => Promise<() => Promise<void>>;
     };
 
-    const output = {
-      args: {
-        command: "npm install vite",
-      },
-    };
-
-    await plugin["tool.execute.before"]!(input, output);
-
-    expect(output.args.command).toBe("ni vite");
-  });
-
-  test("plugin passes through non-bash commands", async () => {
-    const { NiPlugin } = await import("../opencode/ni-plugin.ts");
-
-    const plugin = await NiPlugin({
-      project: "test-project",
-      directory: "/tmp",
-      worktree: "/tmp",
-      client: {} as any,
-      $: {} as any,
-    });
-
-    const input = {
-      tool: "read",
-    };
-
-    const output = {
-      args: {
-        filePath: "/tmp/test.txt",
-      },
-    };
-
-    await plugin["tool.execute.before"]!(input, output);
-
-    // Should not modify non-bash commands
-    expect(output).toEqual({
-      args: {
-        filePath: "/tmp/test.txt",
+    let handler: ((event: { tool: string; input: unknown }) => Promise<void> | void) | undefined;
+    const cleanup = await plugin.setup({
+      location: { directory: "/tmp" },
+      tool: {
+        hook: async (_name, callback) => {
+          handler = callback;
+          return { dispose: async () => {} };
+        },
       },
     });
+
+    if (!handler) {
+      throw new Error("plugin did not register execute.before");
+    }
+
+    return { plugin, handler, cleanup };
+  }
+
+  test("plugin exports a V2 default definition", async () => {
+    const module = await import("../opencode/ni-plugin.ts");
+    expect(module.default).toMatchObject({ id: "ni-plugin" });
+    expect(typeof module.default.setup).toBe("function");
   });
 
-  test("plugin passes through non-PM bash commands", async () => {
-    const { NiPlugin } = await import("../opencode/ni-plugin.ts");
+  test("plugin modifies shell commands", async () => {
+    const { handler, cleanup } = await loadPlugin();
+    const input = { command: "npm install vite" };
+    await handler({ tool: "shell", input });
+    expect(input.command).toBe("ni vite");
+    await cleanup();
+  });
 
-    const plugin = await NiPlugin({
-      project: "test-project",
-      directory: "/tmp",
-      worktree: "/tmp",
-      client: {} as any,
-      $: {} as any,
-    });
+  test("plugin passes through non-shell commands", async () => {
+    const { handler, cleanup } = await loadPlugin();
+    const input = { filePath: "/tmp/test.txt" };
+    await handler({ tool: "read", input });
+    expect(input).toEqual({ filePath: "/tmp/test.txt" });
+    await cleanup();
+  });
 
-    const input = {
-      tool: "bash",
-    };
-
-    const output = {
-      args: {
-        command: "ls -la",
-      },
-    };
-
-    await plugin["tool.execute.before"]!(input, output);
-
-    // Should not modify non-PM commands
-    expect(output.args.command).toBe("ls -la");
+  test("plugin passes through non-PM shell commands", async () => {
+    const { handler, cleanup } = await loadPlugin();
+    const input = { command: "ls -la" };
+    await handler({ tool: "shell", input });
+    expect(input.command).toBe("ls -la");
+    await cleanup();
   });
 });

@@ -1,37 +1,34 @@
 /**
- * {{ dashCase name }} for OpenCode
+ * {{ dashCase name }} for OpenCode 2
  * {{ description }}
  */
 
 import type { Plugin } from "@opencode-ai/plugin";
 
-export const {{ pascalCase name }}Plugin: Plugin = async ({ directory }) => {
-  return {
-    "tool.execute.before": async (input, output) => {
-      // Only process bash/shell commands
-      if (input.tool !== "bash" && input.tool !== "shell") {
+export default {
+  id: "{{ dashCase name }}-plugin",
+  setup: async (ctx) => {
+    const registration = await ctx.tool.hook("execute.before", async (event) => {
+      if (event.tool !== "shell") {
         return;
       }
 
-      const command = output.args?.command;
-      if (!command || typeof command !== "string") {
+      const command =
+        typeof event.input === "object" && event.input !== null
+          ? (event.input as { command?: unknown }).command
+          : undefined;
+      if (typeof command !== "string") {
         return;
       }
 
       try {
         // TODO: Add your plugin logic here
-        // For now, just allow the command as-is
         console.log(`[{{ dashCase name }}] Processing command: ${command}`);
-
-        // You can modify the command by mutating output.args
-        // output.args.command = modifiedCommand;
-
       } catch (error) {
         console.error(`[{{ dashCase name }}] Error:`, error);
-        // On error, allow the original command to proceed
       }
-    },
-  };
-};
+    });
 
-export default {{ pascalCase name }}Plugin;
+    return () => registration.dispose();
+  },
+} satisfies Plugin.Plugin;

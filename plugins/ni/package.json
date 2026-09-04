@@ -21,9 +21,7 @@
     "test": "bun test"
   },
   "devDependencies": {
+    "@opencode-ai/plugin": "0.0.0-beta-19059",
     "@types/bun": "latest"
-  },
-  "dependencies": {
-    "@opencode-ai/plugin": "^1.0.72"
   }
 }

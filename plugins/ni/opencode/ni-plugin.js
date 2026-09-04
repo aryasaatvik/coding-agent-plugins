@@ -138,18 +138,26 @@ async function loadConfig(cwd) {
 }
 
 // opencode/ni-plugin.ts
-var NiPlugin = async ({ directory }) => {
-  return {
-    "tool.execute.before": async (input, output) => {
-      if (input.tool !== "bash" && input.tool !== "shell") {
+function shellCommand(input) {
+  if (typeof input !== "object" || input === null) {
+    return;
+  }
+  const command = input.command;
+  return typeof command === "string" ? command : undefined;
+}
+var ni_plugin_default = {
+  id: "ni-plugin",
+  setup: async (ctx) => {
+    const registration = await ctx.tool.hook("execute.before", async (event) => {
+      if (event.tool !== "shell") {
         return;
       }
-      const command = output.args?.command;
-      if (!command || typeof command !== "string") {
+      const command = shellCommand(event.input);
+      if (!command) {
         return;
       }
       try {
-        const config = await loadConfig(directory);
+        const config = await loadConfig(ctx.location.directory);
         if (!config.enabled) {
           return;
         }
@@ -158,19 +166,21 @@ var NiPlugin = async ({ directory }) => {
           console.error(`[ni-plugin] Config:`, JSON.stringify(config));
         }
         const translated = translateCommand(command, config);
-        if (translated) {
-          if (config.dryRun) {
-            console.log(`[ni-plugin] [DRY RUN] Would translate: '${command}' \u2192 '${translated}'`);
-            return;
-          }
-          output.args.command = translated;
+        if (!translated) {
+          return;
         }
+        if (config.dryRun) {
+          console.log(`[ni-plugin] [DRY RUN] Would translate: '${command}' \u2192 '${translated}'`);
+          return;
+        }
+        event.input.command = translated;
       } catch (error) {
         console.error("[ni-plugin] Error:", error);
       }
-    }
-  };
+    });
+    return () => registration.dispose();
+  }
 };
 export {
-  NiPlugin
+  ni_plugin_default as default
 };

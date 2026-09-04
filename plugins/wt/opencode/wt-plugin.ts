@@ -1,5 +1,5 @@
 /**
- * wt-plugin for OpenCode
+ * wt-plugin for OpenCode 2
  *
  * Nudges `git worktree add` toward `wt new`. OpenCode blocks a tool by throwing
  * in `tool.execute.before`, so we throw with the wt suggestion as the message.
@@ -9,16 +9,24 @@ import type { Plugin } from "@opencode-ai/plugin";
 import { analyzeCommand } from "../shared/translator";
 import { loadConfig } from "../shared/config";
 
-export const WtPlugin: Plugin = async ({ directory }) => {
-  return {
-    "tool.execute.before": async (input, output) => {
-      // Only process bash/shell commands
-      if (input.tool !== "bash" && input.tool !== "shell") {
+function shellCommand(input: unknown): string | undefined {
+  if (typeof input !== "object" || input === null) {
+    return undefined;
+  }
+  const command = (input as { command?: unknown }).command;
+  return typeof command === "string" ? command : undefined;
+}
+
+export default {
+  id: "wt-plugin",
+  setup: async (ctx) => {
+    const registration = await ctx.tool.hook("execute.before", async (event) => {
+      if (event.tool !== "shell") {
         return;
       }
 
-      const command = output.args?.command;
-      if (!command || typeof command !== "string") {
+      const command = shellCommand(event.input);
+      if (!command) {
         return;
       }
 
@@ -27,7 +35,7 @@ export const WtPlugin: Plugin = async ({ directory }) => {
       let result;
       let config;
       try {
-        config = await loadConfig(directory);
+        config = await loadConfig(ctx.location.directory);
         if (!config.enabled) {
           return;
         }
@@ -45,14 +53,14 @@ export const WtPlugin: Plugin = async ({ directory }) => {
         console.error(`[wt-plugin] ${command} -> ${result.suggestion}`);
       }
 
-      // Dry run - advise without blocking.
       if (config.dryRun) {
         console.log(`[wt-plugin] [DRY RUN] would suggest: ${result.suggestion}`);
         return;
       }
 
-      // Throwing aborts the tool; OpenCode surfaces the message to the model.
       throw new Error(`🌳 wt-plugin: ${result.reason}`);
-    },
-  };
-};
+    });
+
+    return () => registration.dispose();
+  },
+} satisfies Plugin.Plugin;
