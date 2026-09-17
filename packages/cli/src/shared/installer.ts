@@ -114,7 +114,7 @@ export class PluginInstaller {
       const opencodeCacheDir = join(process.env.HOME!, ".cache", "opencode");
       const repoCacheDir = join(opencodeCacheDir, "coding-agent-plugins");
 
-      const pluginDir = join(opencodeConfigDir, "plugin");
+      const pluginDir = join(opencodeConfigDir, "plugins");
       const pluginFile = join(pluginDir, `${this.plugin.name}-plugin.js`);
 
       // Ensure directories exist

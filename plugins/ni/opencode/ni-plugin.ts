@@ -3,7 +3,7 @@
  * Automatically translates package manager commands to use ni
  */
 
-import type { Plugin } from "@opencode-ai/plugin";
+import type { Plugin } from "@opencode/plugin";
 import { translateCommand } from "../shared/translator";
 import { loadConfig } from "../shared/config";
 

@@ -5,7 +5,7 @@
  * in `tool.execute.before`, so we throw with the wt suggestion as the message.
  */
 
-import type { Plugin } from "@opencode-ai/plugin";
+import type { Plugin } from "@opencode/plugin";
 import { analyzeCommand } from "../shared/translator";
 import { loadConfig } from "../shared/config";
 
