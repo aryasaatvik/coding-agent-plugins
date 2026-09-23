@@ -1,0 +1,16 @@
+{
+  "name": "session-title",
+  "version": "1.0.0",
+  "description": "Session titles as repo: title or category: title; /title regenerates in the background for Claude Code, native title hook for OpenCode",
+  "author": {
+    "name": "Saatvik Arya",
+    "email": "aryasaatvik@gmail.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/aryasaatvik/coding-agent-plugins",
+  "keywords": [
+    "session",
+    "title",
+    "opencode"
+  ]
+}

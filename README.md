@@ -29,6 +29,18 @@ Steers worktree creation (`git worktree add`, and in Claude Code `EnterWorktree`
 
 ---
 
+### [session-title](plugins/session-title/) v1.0.0
+
+Session titles as `repo: title` inside a repository or `category: title` outside one. In Claude Code, `/title` regenerates the title in the background with OpenCode (`openai/gpt-6-luna`) and it applies with your next message. In OpenCode, the plugin replaces the built-in title through the native `title` hook.
+
+**Platforms:** Claude Code, OpenCode
+**Category:** Productivity
+**Requires (Claude Code):** [`opencode`](https://opencode.ai) on `PATH` with an OpenAI provider
+
+[View Documentation →](plugins/session-title/README.md)
+
+---
+
 _More plugins coming soon!_
 
 ## 🚀 Quick Start

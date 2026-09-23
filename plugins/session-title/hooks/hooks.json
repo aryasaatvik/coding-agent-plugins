@@ -1,0 +1,16 @@
+{
+  "description": "/title starts background title generation; the next prompt applies the generated title",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun ${CLAUDE_PLUGIN_ROOT}/hooks/session-title-hook.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

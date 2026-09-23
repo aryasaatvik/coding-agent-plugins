@@ -28,6 +28,17 @@
       },
       "source": "./plugins/wt",
       "category": "development"
+    },
+    {
+      "name": "session-title",
+      "description": "Session titles as repo: title or category: title; /title regenerates in the background for Claude Code, native title hook for OpenCode",
+      "version": "1.0.0",
+      "author": {
+        "name": "Saatvik Arya",
+        "email": "aryasaatvik@gmail.com"
+      },
+      "source": "./plugins/session-title",
+      "category": "productivity"
     }
   ]
 }
