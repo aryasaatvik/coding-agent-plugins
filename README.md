@@ -6,7 +6,7 @@ A curated collection of plugins that enhance your coding agent experience with b
 
 ## 🔌 Available Plugins
 
-### [ni-plugin](plugins/ni/) v1.0.0
+### [ni-plugin](plugins/ni/) v1.1.0
 
 Universal package manager - automatically translates npm/yarn/pnpm/bun commands to use ni.
 

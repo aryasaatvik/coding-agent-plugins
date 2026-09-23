@@ -42,9 +42,34 @@ describe("Claude Code hook integration", () => {
     expect(result.exitCode).toBe(0);
 
     const output = JSON.parse(result.stdout);
-    expect(output.hookSpecificOutput.permissionDecision).toBe("allow");
+    expect(output.hookSpecificOutput.permissionDecision).toBeUndefined();
     expect(output.hookSpecificOutput.updatedInput.command).toBe("ni vite");
-    expect(output.hookSpecificOutput.permissionDecisionReason).toContain("Translated:");
+    expect(output.systemMessage).toBeUndefined();
+  });
+
+  test("keeps other tool input fields when rewriting", async () => {
+    const input = {
+      session_id: "test",
+      transcript_path: "/tmp/test.jsonl",
+      cwd: "/tmp",
+      permission_mode: "default",
+      hook_event_name: "PreToolUse",
+      tool_name: "Bash",
+      tool_input: {
+        command: "npm run dev",
+        description: "Start dev server",
+        run_in_background: true,
+      },
+    };
+
+    const result = await runHook(input);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.hookSpecificOutput.updatedInput).toEqual({
+      command: "nr dev",
+      description: "Start dev server",
+      run_in_background: true,
+    });
   });
 
   test("passes through non-PM commands", async () => {
@@ -191,15 +216,15 @@ describe("Claude Code hook integration", () => {
     // Check required fields
     expect(output).toHaveProperty("hookSpecificOutput");
     expect(output.hookSpecificOutput).toHaveProperty("hookEventName");
-    expect(output.hookSpecificOutput).toHaveProperty("permissionDecision");
-    expect(output.hookSpecificOutput).toHaveProperty(
+    expect(output.hookSpecificOutput).not.toHaveProperty("permissionDecision");
+    expect(output.hookSpecificOutput).not.toHaveProperty(
       "permissionDecisionReason"
     );
+    expect(output).not.toHaveProperty("systemMessage");
     expect(output.hookSpecificOutput).toHaveProperty("updatedInput");
 
     // Check values
     expect(output.hookSpecificOutput.hookEventName).toBe("PreToolUse");
-    expect(output.hookSpecificOutput.permissionDecision).toBe("allow");
     expect(output.hookSpecificOutput.updatedInput).toHaveProperty("command");
   });
 

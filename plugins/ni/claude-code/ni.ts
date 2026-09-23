@@ -24,9 +24,7 @@ interface HookInput {
 interface HookOutput {
   hookSpecificOutput?: {
     hookEventName: string;
-    permissionDecision: "allow" | "deny" | "ask";
-    permissionDecisionReason: string;
-    updatedInput?: {
+    updatedInput: {
       command: string;
       [key: string]: any;
     };
@@ -63,37 +61,29 @@ async function main() {
     const translated = translateCommand(command, config);
 
     if (translated) {
-      // Dry run mode - show what would happen
+      // Dry run mode - show what would happen without rewriting
       if (config.dryRun) {
         const output: HookOutput = {
-          hookSpecificOutput: {
-            hookEventName: "PreToolUse",
-            permissionDecision: "allow",
-            permissionDecisionReason: `[DRY RUN] Would translate: '${command}' → '${translated}'`,
-            updatedInput: {
-              command: translated,
-            },
-          },
-          systemMessage: `📦 [DRY RUN] ni-plugin would translate: '${command}' → '${translated}'`,
+          systemMessage: `[DRY RUN] ni-plugin would translate: '${command}' → '${translated}'`,
         };
-        console.log(JSON.stringify(output, null, 2));
+        console.log(JSON.stringify(output));
         process.exit(0);
       }
 
-      // Actually translate the command
+      if (config.debug) {
+        console.error(`[ni-plugin] Translated: '${command}' → '${translated}'`);
+      }
+
+      // Rewrite silently and make no permission decision, so the rewritten
+      // command goes through the session's normal permission mode and rules.
       const output: HookOutput = {
         hookSpecificOutput: {
           hookEventName: "PreToolUse",
-          permissionDecision: "allow",
-          permissionDecisionReason: `Translated: '${command}' → '${translated}'`,
-          updatedInput: {
-            command: translated,
-          },
+          updatedInput: { ...tool_input, command: translated },
         },
-        systemMessage: `📦 ni-plugin: Translated '${command}' → '${translated}'`,
       };
 
-      console.log(JSON.stringify(output, null, 2));
+      console.log(JSON.stringify(output));
       process.exit(0);
     }
 

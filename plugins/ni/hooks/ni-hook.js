@@ -160,32 +160,22 @@ async function main() {
     const translated = translateCommand(command, config);
     if (translated) {
       if (config.dryRun) {
-        const output2 = {
-          hookSpecificOutput: {
-            hookEventName: "PreToolUse",
-            permissionDecision: "allow",
-            permissionDecisionReason: `[DRY RUN] Would translate: '${command}' \u2192 '${translated}'`,
-            updatedInput: {
-              command: translated
-            }
-          },
-          systemMessage: `\uD83D\uDCE6 [DRY RUN] ni-plugin would translate: '${command}' \u2192 '${translated}'`
+        const output = {
+          systemMessage: `[DRY RUN] ni-plugin would translate: '${command}' \u2192 '${translated}'`
         };
-        console.log(JSON.stringify(output2, null, 2));
+        console.log(JSON.stringify(output));
         process.exit(0);
+      }
+      if (config.debug) {
+        console.error(`[ni-plugin] Translated: '${command}' \u2192 '${translated}'`);
       }
       const output = {
         hookSpecificOutput: {
           hookEventName: "PreToolUse",
-          permissionDecision: "allow",
-          permissionDecisionReason: `Translated: '${command}' \u2192 '${translated}'`,
-          updatedInput: {
-            command: translated
-          }
-        },
-        systemMessage: `\uD83D\uDCE6 ni-plugin: Translated '${command}' \u2192 '${translated}'`
+          updatedInput: { ...tool_input, command: translated }
+        }
       };
-      console.log(JSON.stringify(output, null, 2));
+      console.log(JSON.stringify(output));
       process.exit(0);
     }
     if (config.debug) {

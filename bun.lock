@@ -28,7 +28,7 @@
     },
     "plugins/ni": {
       "name": "@coding-agent-plugins/ni",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "devDependencies": {
         "@opencode/plugin": "^2.0.4",
         "@types/bun": "latest",
