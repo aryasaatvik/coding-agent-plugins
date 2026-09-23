@@ -21,7 +21,7 @@
     "test": "bun test"
   },
   "devDependencies": {
-    "@opencode/plugin": "^2.0.14",
+    "@opencode/plugin": "^2.0.15",
     "@types/bun": "latest"
   }
 }
