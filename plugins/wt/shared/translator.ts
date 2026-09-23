@@ -29,6 +29,29 @@ function isBypassed(command: string): boolean {
 }
 
 /**
+ * git global options that consume the following token as their value.
+ */
+const GIT_VALUE_OPTIONS = ["-C", "-c", "--git-dir", "--work-tree", "--namespace"];
+
+/**
+ * Arguments after `worktree add` when a shell segment runs `git worktree add`,
+ * else null. `git` must be the segment's command (after optional env
+ * assignments), so text such as `echo "git worktree add"` does not match.
+ */
+function worktreeAddArgs(segment: string): string[] | null {
+  const tokens = segment.trim().split(/\s+/);
+  let i = 0;
+  while (/^[A-Za-z_][A-Za-z0-9_]*=/.test(tokens[i] ?? "")) i++;
+  if (tokens[i] !== "git") return null;
+  i++;
+  while (tokens[i]?.startsWith("-")) {
+    i += GIT_VALUE_OPTIONS.includes(tokens[i]!) ? 2 : 1;
+  }
+  if (tokens[i] !== "worktree" || tokens[i + 1] !== "add") return null;
+  return tokens.slice(i + 2);
+}
+
+/**
  * Parse the arguments of a `git worktree add` command.
  *
  * Returns null when this isn't a `git worktree add`, when a passthrough flag is
@@ -38,17 +61,13 @@ export function parseWorktreeAdd(
   command: string,
   config: Config = {}
 ): ParsedWorktreeAdd | null {
-  const tokens = command.trim().split(/\s+/);
-
-  // Locate the `worktree add` pair and ensure it belongs to a `git` invocation.
-  const wi = tokens.findIndex(
-    (t, idx) => t === "worktree" && tokens[idx + 1] === "add"
-  );
-  if (wi < 1 || !tokens.slice(0, wi).includes("git")) {
+  const rest = command
+    .split(/&&|\|\||[;|\n]/)
+    .map(worktreeAddArgs)
+    .find((args) => args !== null);
+  if (!rest) {
     return null;
   }
-
-  const rest = tokens.slice(wi + 2);
 
   let newBranch: string | undefined;
   const positionals: string[] = [];
@@ -140,11 +159,58 @@ export function analyzeCommand(
 
   const reason =
     `Use \`${suggestion}\` instead of \`git worktree add\`. ` +
-    `wt creates the worktree under ../<repo>-worktrees/<slug>/, syncs gitignored files ` +
-    `(.env, .scratchpad, editor config) from the source repo, and runs \`ni\` to install dependencies.` +
+    `wt creates the worktree, runs the repo's post-install setup, and links the shared Scratchpad.` +
     baseNote +
     ` If you specifically need the raw git invocation (custom path, --detach, scripting), ` +
     `re-run the command prefixed with \`WT_HOOK_OFF=1\`.`;
+
+  return { suggestion, reason };
+}
+
+/**
+ * Analyze a Claude Code EnterWorktree call. Entering an existing worktree by
+ * `path` is allowed; any call without `path` creates a Claude-managed worktree
+ * under .claude/worktrees/ (with `name` or a generated one), so it gets the
+ * wt equivalent instead.
+ */
+export function analyzeEnterWorktree(input: {
+  name?: unknown;
+  path?: unknown;
+}): WorktreeSuggestion | null {
+  if (typeof input.path === "string" && input.path.trim()) {
+    return null;
+  }
+
+  const suggestion =
+    typeof input.name === "string" && input.name.trim()
+      ? `wt new ${input.name.trim()}`
+      : "wt new <branch> [base]";
+
+  const reason =
+    `Do not create Claude-managed worktrees. Create the worktree with \`${suggestion}\`, ` +
+    `then enter it with EnterWorktree \`path\` (the path \`git worktree list\` shows). ` +
+    `wt runs the repo's post-install setup and links the shared Scratchpad.`;
+
+  return { suggestion, reason };
+}
+
+/**
+ * Analyze a Claude Code Agent call. `isolation: "worktree"` gives the subagent
+ * a Claude-managed worktree, so it gets a wt worktree plus `cd` instead.
+ */
+export function analyzeAgent(input: {
+  isolation?: unknown;
+}): WorktreeSuggestion | null {
+  if (input.isolation !== "worktree") {
+    return null;
+  }
+
+  const suggestion = "wt new <branch> [base]";
+
+  const reason =
+    `Do not use agent \`isolation: "worktree"\`; it creates a Claude-managed worktree. ` +
+    `Create the worktree with \`${suggestion}\`, then relaunch the agent without \`isolation\` ` +
+    `and have it \`cd\` into the worktree path (the path \`git worktree list\` shows).`;
 
   return { suggestion, reason };
 }

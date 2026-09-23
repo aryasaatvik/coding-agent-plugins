@@ -20,8 +20,8 @@
     },
     {
       "name": "wt",
-      "description": "Nudges git worktree add toward the wt CLI (syncs gitignored files + installs deps)",
-      "version": "1.0.0",
+      "description": "Steers worktree creation (git worktree add, Claude-managed worktrees) toward the wt CLI",
+      "version": "1.1.0",
       "author": {
         "name": "Saatvik Arya",
         "email": "aryasaatvik@gmail.com"

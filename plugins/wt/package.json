@@ -1,6 +1,6 @@
 {
   "name": "@coding-agent-plugins/wt",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Nudges git worktree add toward the wt CLI (syncs gitignored files + installs deps)",
   "author": "Saatvik Arya",
   "license": "MIT",

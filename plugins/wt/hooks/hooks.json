@@ -1,13 +1,12 @@
 {
-  "description": "Nudges `git worktree add` toward `wt new`, which syncs gitignored files and installs dependencies",
+  "description": "Steers worktree creation (git worktree add, EnterWorktree without path, Agent isolation: worktree) toward `wt new`, which runs the repo's post-install setup and links the shared Scratchpad",
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|EnterWorktree|Agent|Task",
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git worktree add*)",
             "command": "bun ${CLAUDE_PLUGIN_ROOT}/hooks/wt-hook.js",
             "timeout": 5
           }

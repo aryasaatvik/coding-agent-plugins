@@ -8,13 +8,27 @@ function isBypassed(command) {
     return true;
   return /(^|\s)WT_HOOK_OFF=1(\s|$)/.test(command);
 }
+var GIT_VALUE_OPTIONS = ["-C", "-c", "--git-dir", "--work-tree", "--namespace"];
+function worktreeAddArgs(segment) {
+  const tokens = segment.trim().split(/\s+/);
+  let i = 0;
+  while (/^[A-Za-z_][A-Za-z0-9_]*=/.test(tokens[i] ?? ""))
+    i++;
+  if (tokens[i] !== "git")
+    return null;
+  i++;
+  while (tokens[i]?.startsWith("-")) {
+    i += GIT_VALUE_OPTIONS.includes(tokens[i]) ? 2 : 1;
+  }
+  if (tokens[i] !== "worktree" || tokens[i + 1] !== "add")
+    return null;
+  return tokens.slice(i + 2);
+}
 function parseWorktreeAdd(command, config = {}) {
-  const tokens = command.trim().split(/\s+/);
-  const wi = tokens.findIndex((t, idx) => t === "worktree" && tokens[idx + 1] === "add");
-  if (wi < 1 || !tokens.slice(0, wi).includes("git")) {
+  const rest = command.split(/&&|\|\||[;|\n]/).map(worktreeAddArgs).find((args) => args !== null);
+  if (!rest) {
     return null;
   }
-  const rest = tokens.slice(wi + 2);
   let newBranch;
   const positionals = [];
   for (let k = 0;k < rest.length; k++) {
@@ -73,7 +87,7 @@ function analyzeCommand(command, config = {}) {
   const defaultBase = config.defaultBase ?? "main";
   const suggestion = buildSuggestion(parsed);
   const baseNote = !parsed.checkoutExisting && !parsed.base ? ` (wt bases new branches off \`${defaultBase}\`; append a base branch if you need a different one, e.g. \`${suggestion} <base>\`.)` : "";
-  const reason = `Use \`${suggestion}\` instead of \`git worktree add\`. ` + `wt creates the worktree under ../<repo>-worktrees/<slug>/, syncs gitignored files ` + `(.env, .scratchpad, editor config) from the source repo, and runs \`ni\` to install dependencies.` + baseNote + ` If you specifically need the raw git invocation (custom path, --detach, scripting), ` + `re-run the command prefixed with \`WT_HOOK_OFF=1\`.`;
+  const reason = `Use \`${suggestion}\` instead of \`git worktree add\`. ` + `wt creates the worktree, runs the repo's post-install setup, and links the shared Scratchpad.` + baseNote + ` If you specifically need the raw git invocation (custom path, --detach, scripting), ` + `re-run the command prefixed with \`WT_HOOK_OFF=1\`.`;
   return { suggestion, reason };
 }
 

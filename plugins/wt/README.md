@@ -12,6 +12,7 @@ to install dependencies — so the new worktree is ready to work in immediately.
 
 - 🌳 **Smart nudge** — detects `git worktree add` and suggests `wt new <branch> [base]`
 - 🎯 **Surgical scope** — only `add` is touched; `list`, `remove`, `prune`, `move`, `lock` pass through
+- 🤖 **Claude-managed worktrees** — in Claude Code, `EnterWorktree` without `path` and `Agent` with `isolation: "worktree"` are denied too; `EnterWorktree` with `path` enters a wt worktree
 - 🪂 **Escape hatch** — `--detach` / `--no-checkout` / `--orphan` and a `WT_HOOK_OFF=1` prefix bypass the nudge
 - 🔌 **Dual support** — works with both Claude Code and OpenCode
 - ⚙️ **Configurable** — hard block (default) or soft advisory via `dryRun`
@@ -37,7 +38,7 @@ the real worktree path.
 | `git worktree add ../x existing-branch` | `wt new existing-branch` |
 | `git worktree add ../x-feature` | `wt new x-feature` |
 
-- **Claude Code** — a `PreToolUse` hook returns `permissionDecision: "deny"` with the suggestion as the reason.
+- **Claude Code** — a `PreToolUse` hook on `Bash`, `EnterWorktree`, and `Agent` returns `permissionDecision: "deny"` with the suggestion as the reason.
 - **OpenCode 2** — a `tool.execute.before` hook on the `shell` tool throws with the suggestion (OpenCode aborts the tool and shows the message). V1 is not supported.
 
 ## ⚙️ Configuration
@@ -87,7 +88,7 @@ plugins/wt/
 │   ├── translator.ts            # git worktree add → wt analysis
 │   └── types.ts                 # Shared types
 ├── hooks/
-│   ├── hooks.json               # Hook registration (PreToolUse / Bash)
+│   ├── hooks.json               # Hook registration (PreToolUse / Bash, EnterWorktree, Agent)
 │   └── wt-hook.js               # Built Claude Code hook
 ├── tests/
 └── config.example.json

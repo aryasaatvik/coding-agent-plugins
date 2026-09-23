@@ -3,13 +3,21 @@
 /**
  * wt-plugin for Claude Code
  *
- * Nudges `git worktree add` toward `wt new` (which syncs gitignored files and
- * installs dependencies) by denying the raw command and suggesting the wt
- * equivalent. Other `git worktree` subcommands are left alone.
+ * Steers worktree creation toward `wt new` (which runs the repo's post-install
+ * setup and links the shared Scratchpad) by denying the Claude Code paths that
+ * create worktrees without it and handing the agent the wt equivalent:
+ * - Bash `git worktree add` (other `git worktree` subcommands pass through)
+ * - EnterWorktree without `path` (entering an existing worktree by `path` is allowed)
+ * - Agent with `isolation: "worktree"`
  */
 
 import { loadConfig } from "../shared/config";
-import { analyzeCommand } from "../shared/translator";
+import {
+  analyzeAgent,
+  analyzeCommand,
+  analyzeEnterWorktree,
+} from "../shared/translator";
+import type { Config, WorktreeSuggestion } from "../shared/types";
 
 interface HookInput {
   session_id: string;
@@ -18,73 +26,83 @@ interface HookInput {
   permission_mode: string;
   hook_event_name: string;
   tool_name: string;
-  tool_input: {
-    command?: string;
-    [key: string]: any;
-  };
+  tool_input: Record<string, unknown>;
 }
 
 interface HookOutput {
   hookSpecificOutput?: {
     hookEventName: string;
-    permissionDecision: "allow" | "deny" | "ask";
+    permissionDecision: "deny";
     permissionDecisionReason: string;
   };
   systemMessage?: string;
 }
 
+function analyze(
+  { tool_name, tool_input }: HookInput,
+  config: Config
+): WorktreeSuggestion | null {
+  switch (tool_name) {
+    case "Bash": {
+      const result =
+        typeof tool_input.command === "string"
+          ? analyzeCommand(tool_input.command, config)
+          : null;
+      return result && {
+        ...result,
+        reason: `${result.reason} After \`wt new\`, enter the worktree with EnterWorktree \`path\` (the path \`git worktree list\` shows).`,
+      };
+    }
+    case "EnterWorktree":
+      return analyzeEnterWorktree(tool_input);
+    case "Agent":
+    case "Task":
+      return analyzeAgent(tool_input);
+    default:
+      return null;
+  }
+}
+
 async function main() {
   try {
-    const input = await Bun.stdin.text();
-    const hookInput: HookInput = JSON.parse(input);
+    const hookInput: HookInput = JSON.parse(await Bun.stdin.text());
 
-    const { tool_name, tool_input, cwd } = hookInput;
-    const command = tool_input.command;
-
-    if (tool_name !== "Bash" || !command) {
-      process.exit(0);
-    }
-
-    const config = await loadConfig(cwd);
+    const config = await loadConfig(hookInput.cwd);
 
     if (config.enabled === false) {
       process.exit(0);
     }
 
     if (config.debug) {
-      console.error(`[wt-plugin] Processing command: ${command}`);
+      console.error(`[wt-plugin] Processing ${hookInput.tool_name}:`, JSON.stringify(hookInput.tool_input));
       console.error(`[wt-plugin] Config:`, JSON.stringify(config));
     }
 
-    const result = analyzeCommand(command, config);
+    const result = analyze(hookInput, config);
 
     if (!result) {
-      if (config.debug) {
-        console.error(`[wt-plugin] No suggestion for: ${command}`);
-      }
       process.exit(0);
     }
 
     // Dry run - advise without blocking.
     if (config.dryRun) {
       const output: HookOutput = {
-        systemMessage: `🌳 [DRY RUN] wt-plugin would suggest: \`${result.suggestion}\``,
+        systemMessage: `[DRY RUN] wt-plugin would suggest: \`${result.suggestion}\``,
       };
-      console.log(JSON.stringify(output, null, 2));
+      console.log(JSON.stringify(output));
       process.exit(0);
     }
 
-    // Block the raw command and hand the agent the wt equivalent.
+    // Block the call and hand the agent the wt equivalent.
     const output: HookOutput = {
       hookSpecificOutput: {
         hookEventName: "PreToolUse",
         permissionDecision: "deny",
         permissionDecisionReason: result.reason,
       },
-      systemMessage: `🌳 wt-plugin: suggested \`${result.suggestion}\` instead of \`git worktree add\``,
     };
 
-    console.log(JSON.stringify(output, null, 2));
+    console.log(JSON.stringify(output));
     process.exit(0);
   } catch (error) {
     console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
