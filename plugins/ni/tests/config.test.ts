@@ -7,6 +7,7 @@ import {
   loadConfigFile,
   loadConfig,
 } from "../shared/config";
+import type { Config } from "../shared/types";
 
 const TEST_DIR = join(import.meta.dir, "fixtures", "config-test");
 
@@ -40,7 +41,7 @@ describe("getDefaultConfig", () => {
 
 describe("validateConfig", () => {
   test("validates valid config", () => {
-    const input = {
+    const input: Config = {
       enabled: true,
       dryRun: false,
       debug: true,

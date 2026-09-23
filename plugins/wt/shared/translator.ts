@@ -72,17 +72,17 @@ export function parseWorktreeAdd(
   let newBranch: string | undefined;
   const positionals: string[] = [];
 
-  for (let k = 0; k < rest.length; k++) {
-    const t = rest[k];
+  const args = rest[Symbol.iterator]();
+  for (const t of args) {
     if (PASSTHROUGH_FLAGS.includes(t)) {
       return null;
     }
     if (t === "-b" || t === "-B") {
-      newBranch = rest[++k];
+      newBranch = args.next().value;
       continue;
     }
     if (VALUE_FLAGS.includes(t)) {
-      k++; // skip the flag's value
+      args.next(); // skip the flag's value
       continue;
     }
     if (t.startsWith("-")) {
@@ -91,21 +91,21 @@ export function parseWorktreeAdd(
     positionals.push(t);
   }
 
-  // positionals: [<path>, <commit-ish>?]
+  const [path, ref] = positionals;
   let branch: string | undefined;
   let base: string | undefined;
   let checkoutExisting = false;
 
   if (newBranch) {
     branch = newBranch;
-    base = positionals[1];
-  } else if (positionals.length >= 2) {
+    base = ref;
+  } else if (ref) {
     // `git worktree add <path> <ref>` -> check out an existing ref
-    branch = positionals[1];
+    branch = ref;
     checkoutExisting = true;
-  } else if (positionals.length === 1) {
+  } else if (path) {
     // `git worktree add <path>` -> git names the branch after the path
-    branch = basename(positionals[0]);
+    branch = basename(path);
   }
 
   if (!branch) {

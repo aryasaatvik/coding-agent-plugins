@@ -17,8 +17,8 @@ describe("Claude Code hook integration", () => {
     proc.stdin.write(JSON.stringify(input));
     proc.stdin.end();
 
-    const stdout = await new Response(proc.stdout).text();
-    const stderr = await new Response(proc.stderr).text();
+    const stdout = await Bun.readableStreamToText(proc.stdout);
+    const stderr = await Bun.readableStreamToText(proc.stderr);
     const exitCode = await proc.exited;
 
     return { stdout, stderr, exitCode };
@@ -239,7 +239,7 @@ describe("Claude Code hook integration", () => {
     proc.stdin.write("{ invalid json }");
     proc.stdin.end();
 
-    const stderr = await new Response(proc.stderr).text();
+    const stderr = await Bun.readableStreamToText(proc.stderr);
     const exitCode = await proc.exited;
 
     expect(exitCode).toBe(1);

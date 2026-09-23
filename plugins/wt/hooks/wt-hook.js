@@ -82,17 +82,17 @@ function parseWorktreeAdd(command, config = {}) {
   }
   let newBranch;
   const positionals = [];
-  for (let k = 0;k < rest.length; k++) {
-    const t = rest[k];
+  const args = rest[Symbol.iterator]();
+  for (const t of args) {
     if (PASSTHROUGH_FLAGS.includes(t)) {
       return null;
     }
     if (t === "-b" || t === "-B") {
-      newBranch = rest[++k];
+      newBranch = args.next().value;
       continue;
     }
     if (VALUE_FLAGS.includes(t)) {
-      k++;
+      args.next();
       continue;
     }
     if (t.startsWith("-")) {
@@ -100,17 +100,18 @@ function parseWorktreeAdd(command, config = {}) {
     }
     positionals.push(t);
   }
+  const [path, ref] = positionals;
   let branch;
   let base;
   let checkoutExisting = false;
   if (newBranch) {
     branch = newBranch;
-    base = positionals[1];
-  } else if (positionals.length >= 2) {
-    branch = positionals[1];
+    base = ref;
+  } else if (ref) {
+    branch = ref;
     checkoutExisting = true;
-  } else if (positionals.length === 1) {
-    branch = basename(positionals[0]);
+  } else if (path) {
+    branch = basename(path);
   }
   if (!branch) {
     return null;
