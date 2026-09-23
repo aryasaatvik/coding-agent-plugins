@@ -11,6 +11,7 @@
         "@turbo/gen": "^2.6.1",
         "@types/bun": "latest",
         "turbo": "^2.6.1",
+        "typescript": "^5.9.3",
       },
     },
     "packages/cli": {
