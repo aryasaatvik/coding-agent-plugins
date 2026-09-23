@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+- Remove the `defaultBase` option. wt never read it; it only changed the deny
+  message. The message now says wt bases new branches off `origin/HEAD`, which
+  is wt's own default.
+
 ## 1.1.0
 
 - Claude Code: deny `EnterWorktree` calls without `path` (with `name` or a

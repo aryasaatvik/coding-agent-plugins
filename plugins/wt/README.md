@@ -49,8 +49,7 @@ Create a `.wt-plugin.json` in your project root or `~/.config/wt-plugin/config.j
 {
   "enabled": true,
   "dryRun": false,
-  "debug": false,
-  "defaultBase": "main"
+  "debug": false
 }
 ```
 
@@ -59,7 +58,6 @@ Create a `.wt-plugin.json` in your project root or `~/.config/wt-plugin/config.j
 | `enabled` | boolean | `true` | Enable/disable the plugin |
 | `dryRun` | boolean | `false` | Advise (systemMessage) instead of blocking |
 | `debug` | boolean | `false` | Enable debug logging |
-| `defaultBase` | string | `"main"` | Base branch wt creates new branches from |
 
 ### Bypassing for a single command
 

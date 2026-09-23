@@ -23,12 +23,6 @@ export interface Config {
    * @default false
    */
   debug?: boolean;
-
-  /**
-   * Base branch wt creates new branches from (mirrors `wt new <branch> [base]`)
-   * @default "main"
-   */
-  defaultBase?: string;
 }
 
 /**

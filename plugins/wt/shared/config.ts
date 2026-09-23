@@ -14,7 +14,6 @@ export function getDefaultConfig(): Config {
     enabled: true,
     dryRun: false,
     debug: false,
-    defaultBase: "main",
   };
 }
 
@@ -33,10 +32,6 @@ export function validateConfig(config: unknown): Config {
     enabled: typeof c.enabled === "boolean" ? c.enabled : defaults.enabled,
     dryRun: typeof c.dryRun === "boolean" ? c.dryRun : defaults.dryRun,
     debug: typeof c.debug === "boolean" ? c.debug : defaults.debug,
-    defaultBase:
-      typeof c.defaultBase === "string" && c.defaultBase.trim().length > 0
-        ? c.defaultBase.trim()
-        : defaults.defaultBase,
   };
 
   return validated;

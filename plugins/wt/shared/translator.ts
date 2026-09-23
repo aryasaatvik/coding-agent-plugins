@@ -149,12 +149,11 @@ export function analyzeCommand(
     return null;
   }
 
-  const defaultBase = config.defaultBase ?? "main";
   const suggestion = buildSuggestion(parsed);
 
   const baseNote =
     !parsed.checkoutExisting && !parsed.base
-      ? ` (wt bases new branches off \`${defaultBase}\`; append a base branch if you need a different one, e.g. \`${suggestion} <base>\`.)`
+      ? ` (wt bases new branches off the remote's default branch, \`origin/HEAD\`; append a base branch if you need a different one, e.g. \`${suggestion} <base>\`.)`
       : "";
 
   const reason =

@@ -21,7 +21,7 @@
     {
       "name": "wt",
       "description": "Steers worktree creation (git worktree add, Claude-managed worktrees) toward the wt CLI",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "Saatvik Arya",
         "email": "aryasaatvik@gmail.com"

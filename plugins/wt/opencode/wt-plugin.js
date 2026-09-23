@@ -84,9 +84,8 @@ function analyzeCommand(command, config = {}) {
   if (!parsed) {
     return null;
   }
-  const defaultBase = config.defaultBase ?? "main";
   const suggestion = buildSuggestion(parsed);
-  const baseNote = !parsed.checkoutExisting && !parsed.base ? ` (wt bases new branches off \`${defaultBase}\`; append a base branch if you need a different one, e.g. \`${suggestion} <base>\`.)` : "";
+  const baseNote = !parsed.checkoutExisting && !parsed.base ? ` (wt bases new branches off the remote's default branch, \`origin/HEAD\`; append a base branch if you need a different one, e.g. \`${suggestion} <base>\`.)` : "";
   const reason = `Use \`${suggestion}\` instead of \`git worktree add\`. ` + `wt creates the worktree, runs the repo's post-install setup, and links the shared Scratchpad.` + baseNote + ` If you specifically need the raw git invocation (custom path, --detach, scripting), ` + `re-run the command prefixed with \`WT_HOOK_OFF=1\`.`;
   return { suggestion, reason };
 }
@@ -98,8 +97,7 @@ function getDefaultConfig() {
   return {
     enabled: true,
     dryRun: false,
-    debug: false,
-    defaultBase: "main"
+    debug: false
   };
 }
 function validateConfig(config) {
@@ -111,8 +109,7 @@ function validateConfig(config) {
   const validated = {
     enabled: typeof c.enabled === "boolean" ? c.enabled : defaults.enabled,
     dryRun: typeof c.dryRun === "boolean" ? c.dryRun : defaults.dryRun,
-    debug: typeof c.debug === "boolean" ? c.debug : defaults.debug,
-    defaultBase: typeof c.defaultBase === "string" && c.defaultBase.trim().length > 0 ? c.defaultBase.trim() : defaults.defaultBase
+    debug: typeof c.debug === "boolean" ? c.debug : defaults.debug
   };
   return validated;
 }

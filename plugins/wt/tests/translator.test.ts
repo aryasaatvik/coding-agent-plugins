@@ -100,11 +100,12 @@ describe("analyzeCommand - suggestions", () => {
     expect(r?.reason).toContain("post-install setup");
   });
 
-  test("respects a custom defaultBase in the base note", () => {
-    const r = analyzeCommand("git worktree add -b feat ../feat", {
-      defaultBase: "develop",
-    });
-    expect(r?.reason).toContain("`develop`");
+  test("base note names origin/HEAD when no base is given", () => {
+    const r = analyzeCommand("git worktree add -b feat ../feat");
+    expect(r?.reason).toContain("`origin/HEAD`");
+    expect(
+      analyzeCommand("git worktree add -b feat ../feat develop")?.reason
+    ).not.toContain("origin/HEAD");
   });
 });
 

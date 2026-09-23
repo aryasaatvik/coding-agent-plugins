@@ -7,7 +7,6 @@ describe("getDefaultConfig", () => {
       enabled: true,
       dryRun: false,
       debug: false,
-      defaultBase: "main",
     });
   });
 });
@@ -21,7 +20,7 @@ describe("validateConfig", () => {
 
   test("coerces invalid field types to defaults", () => {
     expect(
-      validateConfig({ enabled: "yes", dryRun: 1, debug: null, defaultBase: 42 })
+      validateConfig({ enabled: "yes", dryRun: 1, debug: null })
     ).toEqual(getDefaultConfig());
   });
 
@@ -31,17 +30,17 @@ describe("validateConfig", () => {
         enabled: false,
         dryRun: true,
         debug: true,
-        defaultBase: "develop",
       })
     ).toEqual({
       enabled: false,
       dryRun: true,
       debug: true,
-      defaultBase: "develop",
     });
   });
 
-  test("blank defaultBase falls back to main", () => {
-    expect(validateConfig({ defaultBase: "   " }).defaultBase).toBe("main");
+  test("drops unknown keys such as the removed defaultBase", () => {
+    expect(validateConfig({ defaultBase: "develop" })).toEqual(
+      getDefaultConfig()
+    );
   });
 });
