@@ -161,8 +161,9 @@ This repository uses [Turborepo](https://turbo.build/repo) for efficient monorep
 Before review, run `bun run check`. Before release, run `bun run release:check`
 (formatting, lint, types, offline tests, build, and artifact consumers).
 `bun run test:artifact` checks existing build output, so run `bun run build` first.
-Ordinary PRs have no automatic CI workflow; the existing tag/manual release
-workflow uses the root Bun pin and runs the full release gate.
+CI runs `check`, build, and artifact validation on pull requests and pushes to
+main using the root Bun pin. The existing tag/manual release workflow runs the
+full release gate.
 
 ### Building Plugins
 

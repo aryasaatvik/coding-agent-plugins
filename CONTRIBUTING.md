@@ -40,8 +40,9 @@ The existing release workflow runs only for `<plugin>@<version>` tags or manual
 dispatch. It installs frozen dependencies using the root Bun pin, runs
 `release:check`, and uploads the selected validated tarball. The GitHub Release
 job depends on that validation job and downloads those exact bytes. Manual
-branch dispatch validates/packages but does not create a release. There is no
-automatic PR or branch-push CI workflow; run the local checks before review.
+branch dispatch validates/packages but does not create a release. Ordinary CI
+runs on pull requests and pushes to main, using the root Bun pin, frozen
+dependencies, `check`, and build/artifact validation.
 Merging a PR does not itself publish anything.
 
 For the existing npm CLI distribution, its `prepublishOnly` hook runs the root
