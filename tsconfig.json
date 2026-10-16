@@ -34,7 +34,7 @@
     "packages/**/*.js",
     "plugins/**/*.ts",
     "turbo/generators/config.js",
-    "*.config.ts"
+    "*.ts"
   ],
   "exclude": ["node_modules", "**/dist/**", "**/node_modules/**"]
 }

@@ -7,7 +7,8 @@
     ".gitignore",
     "tsconfig.json",
     "bunfig.toml",
-    "package.json"
+    "package.json",
+    ".claude-plugin/marketplace.json"
   ],
   "globalEnv": ["NODE_ENV", "CLAUDE_PLUGIN_ROOT"],
   "tasks": {
