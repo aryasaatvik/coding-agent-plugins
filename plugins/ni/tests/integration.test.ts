@@ -1,6 +1,13 @@
-import { describe, test, expect } from "bun:test";
+import { afterAll, describe, test, expect } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { spawn } from "bun";
 import { join } from "path";
+
+const directory = mkdtempSync(join(tmpdir(), "ni-integration-"));
+// A project config prevents integration tests from reading the user's global config.
+writeFileSync(join(directory, ".ni-plugin.json"), "{}");
+afterAll(() => rmSync(directory, { recursive: true, force: true }));
 
 const CLAUDE_HOOK = join(import.meta.dir, "../claude-code/ni.ts");
 
@@ -28,7 +35,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -51,7 +58,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -76,7 +83,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -95,7 +102,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Write",
@@ -115,7 +122,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -136,7 +143,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -157,7 +164,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -180,7 +187,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -201,7 +208,7 @@ describe("Claude Code hook integration", () => {
     const input = {
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: "Bash",
@@ -265,7 +272,7 @@ describe("OpenCode plugin integration", () => {
 
     let handler: ((event: { tool: string; input: unknown }) => Promise<void> | void) | undefined;
     const cleanup = await plugin.setup({
-      location: { directory: "/tmp" },
+      location: { directory },
       tool: {
         hook: async (_name, callback) => {
           handler = callback;

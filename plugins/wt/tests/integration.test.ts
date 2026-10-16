@@ -1,4 +1,12 @@
-import { describe, test, expect } from "bun:test";
+import { afterAll, describe, test, expect } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+const directory = mkdtempSync(join(tmpdir(), "wt-integration-"));
+// A project config prevents integration tests from reading the user's global config.
+writeFileSync(join(directory, ".wt-plugin.json"), "{}");
+afterAll(() => rmSync(directory, { recursive: true, force: true }));
 
 describe("OpenCode plugin integration", () => {
   async function loadPlugin() {
@@ -19,7 +27,7 @@ describe("OpenCode plugin integration", () => {
     let handler: ((event: { tool: string; input: unknown }) => Promise<void> | void) | undefined;
     let disposed = false;
     const cleanup = await plugin.setup({
-      location: { directory: "/tmp" },
+      location: { directory },
       tool: {
         hook: async (_name, callback) => {
           handler = callback;

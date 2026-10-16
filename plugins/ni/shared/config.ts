@@ -69,10 +69,13 @@ export async function loadConfigFile(path: string): Promise<Config | null> {
  * Load configuration from standard locations
  * Priority: project > global > defaults
  */
-export async function loadConfig(cwd: string): Promise<Config> {
+export async function loadConfig(
+  cwd: string,
+  globalConfigPath = join(process.env.HOME || "~", ".config", "ni-plugin", "config.json"),
+): Promise<Config> {
   const configPaths = [
     join(cwd, ".ni-plugin.json"),
-    join(process.env.HOME || "~", ".config", "ni-plugin", "config.json"),
+    globalConfigPath,
   ];
 
   for (const path of configPaths) {

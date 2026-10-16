@@ -1,6 +1,13 @@
-import { describe, test, expect } from "bun:test";
+import { afterAll, describe, test, expect } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { spawn } from "bun";
 import { join } from "path";
+
+const directory = mkdtempSync(join(tmpdir(), "wt-integration-"));
+// A project config prevents integration tests from reading the user's global config.
+writeFileSync(join(directory, ".wt-plugin.json"), "{}");
+afterAll(() => rmSync(directory, { recursive: true, force: true }));
 
 const CLAUDE_HOOK = join(import.meta.dir, "../claude-code/wt.ts");
 
@@ -15,7 +22,7 @@ async function runHook(toolName: string, toolInput: Record<string, unknown>) {
     JSON.stringify({
       session_id: "test",
       transcript_path: "/tmp/test.jsonl",
-      cwd: "/tmp",
+      cwd: directory,
       permission_mode: "default",
       hook_event_name: "PreToolUse",
       tool_name: toolName,

@@ -38,10 +38,10 @@ async function loadConfigFile(path) {
     return null;
   }
 }
-async function loadConfig(cwd) {
+async function loadConfig(cwd, globalConfigPath = join(process.env.HOME || "~", ".config", "ni-plugin", "config.json")) {
   const configPaths = [
     join(cwd, ".ni-plugin.json"),
-    join(process.env.HOME || "~", ".config", "ni-plugin", "config.json")
+    globalConfigPath
   ];
   for (const path of configPaths) {
     const config = await loadConfigFile(path);
@@ -160,10 +160,10 @@ async function main() {
     const translated = translateCommand(command, config);
     if (translated) {
       if (config.dryRun) {
-        const output = {
+        const output2 = {
           systemMessage: `[DRY RUN] ni-plugin would translate: '${command}' \u2192 '${translated}'`
         };
-        console.log(JSON.stringify(output));
+        console.log(JSON.stringify(output2));
         process.exit(0);
       }
       if (config.debug) {
