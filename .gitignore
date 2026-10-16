@@ -30,3 +30,7 @@ config.json
 # Test fixtures (compiled by `bun build --compile` in integration tests)
 plugins/ni/opencode/ni
 plugins/ni/opencode/ni.exe
+
+# Local distribution validation
+/build/
+/coverage/

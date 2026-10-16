@@ -6,8 +6,6 @@ import { parseArgs } from "util";
 import type {
   CLIOptions,
   MarketplaceConfig,
-  PluginConfig,
-  PlatformInfo,
   InstallResult,
 } from "./types";
 import { detectPlatforms, checkDependencies } from "./detector";

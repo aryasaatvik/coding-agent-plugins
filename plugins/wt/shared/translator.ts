@@ -59,7 +59,7 @@ function worktreeAddArgs(segment: string): string[] | null {
  */
 export function parseWorktreeAdd(
   command: string,
-  config: Config = {}
+  _config: Config = {}
 ): ParsedWorktreeAdd | null {
   const rest = command
     .split(/&&|\|\||[;|\n]/)

@@ -3,7 +3,7 @@
  */
 module.exports = function generator(plop) {
   // Helper for PascalCase conversion
-  plop.setHelper("pascalCase", (text) => {
+  plop.setHelper("pascalCase", /** @param {string} text */ (text) => {
     return text
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -11,7 +11,7 @@ module.exports = function generator(plop) {
   });
 
   // Helper for proper case
-  plop.setHelper("properCase", (text) => {
+  plop.setHelper("properCase", /** @param {string} text */ (text) => {
     return text
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))

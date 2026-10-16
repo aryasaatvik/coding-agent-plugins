@@ -7,7 +7,6 @@
 import { parseArgs } from "util";
 import type {
   CLIOptions,
-  MarketplaceConfig,
   InstallResult,
   PluginConfig,
 } from "../shared/types.js";

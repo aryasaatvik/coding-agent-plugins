@@ -59,7 +59,7 @@ export async function loadConfigFile(path: string): Promise<Config | null> {
     const file = Bun.file(path);
     const content = await file.json();
     return validateConfig(content);
-  } catch (error) {
+  } catch {
     // Invalid JSON or read error - return null
     return null;
   }

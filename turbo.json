@@ -6,7 +6,8 @@
     "**/.env.*",
     ".gitignore",
     "tsconfig.json",
-    "bunfig.toml"
+    "bunfig.toml",
+    "package.json"
   ],
   "globalEnv": [
     "NODE_ENV",
@@ -14,8 +15,11 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": [
+        "dist/**",
         "hooks/**/*.js",
         "opencode/**/*.js",
         "!**/*.ts"
@@ -31,7 +35,9 @@
       "cache": true
     },
     "build:claude": {
-      "outputs": ["hooks/**/*.js"],
+      "outputs": [
+        "hooks/**/*.js"
+      ],
       "inputs": [
         "shared/**/*.ts",
         "claude-code/**/*.ts"
@@ -39,7 +45,9 @@
       "cache": true
     },
     "build:opencode": {
-      "outputs": ["opencode/**/*.js"],
+      "outputs": [
+        "opencode/**/*.js"
+      ],
       "inputs": [
         "shared/**/*.ts",
         "opencode/**/*.ts"
@@ -47,8 +55,12 @@
       "cache": true
     },
     "test": {
-      "dependsOn": ["build"],
-      "outputs": ["coverage/**"],
+      "dependsOn": [
+        "build"
+      ],
+      "outputs": [
+        "coverage/**"
+      ],
       "inputs": [
         "$TURBO_DEFAULT$",
         "!README.md",
@@ -57,7 +69,9 @@
       "cache": true
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": true
     },

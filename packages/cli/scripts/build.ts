@@ -7,7 +7,6 @@
  */
 
 import { copyFileSync, mkdirSync } from "fs";
-import { join } from "path";
 
 console.log("📦 Building CLI package...\n");
 

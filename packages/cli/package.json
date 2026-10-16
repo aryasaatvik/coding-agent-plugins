@@ -11,15 +11,12 @@
   ],
   "scripts": {
     "build": "bun scripts/build.ts",
-    "prepublishOnly": "bun run build",
-    "dev": "bun run bin/cli.js",
-    "test": "echo \"No tests yet\" && exit 0"
-  },
-  "dependencies": {
-    "@clack/prompts": "^1.8.1"
+    "prepublishOnly": "cd ../.. && bun run release:check",
+    "dev": "bun run bin/cli.js"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@clack/prompts": "^1.8.1"
   },
   "engines": {
     "bun": ">=1.0.0"

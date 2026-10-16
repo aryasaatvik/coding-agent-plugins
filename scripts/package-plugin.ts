@@ -42,6 +42,7 @@ try {
   // Always include if they exist
   const alwaysInclude = [
     "hooks",
+    "commands",
     "opencode",
     ".claude-plugin",
     "shared",

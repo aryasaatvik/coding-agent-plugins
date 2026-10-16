@@ -34,7 +34,7 @@ async function loadConfigFile(path) {
     const file = Bun.file(path);
     const content = await file.json();
     return validateConfig(content);
-  } catch (error) {
+  } catch {
     return null;
   }
 }

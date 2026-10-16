@@ -92,7 +92,7 @@ export function showMissingDependencies(deps: { jq?: boolean; bun?: boolean }): 
   }
 }
 
-export function createSpinner(message: string) {
+export function createSpinner(_message: string) {
   return spinner();
 }
 

@@ -19,15 +19,23 @@
   "scripts": {
     "install-plugins": "bun packages/cli/bin/cli.js",
     "build": "turbo run build",
-    "test": "turbo run test",
+    "test": "bun test ./plugins",
     "dev": "turbo run dev --parallel",
     "generate": "turbo gen",
     "clean": "turbo run clean && rm -rf .turbo",
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint --deny-warnings .",
+    "check": "bun run format:check && bun run lint && bun run typecheck && bun run test",
+    "test:artifact": "bun scripts/test-artifact.ts",
+    "release:check": "bun run check && bun run build && bun run test:artifact"
   },
   "devDependencies": {
     "@turbo/gen": "^2.11.3",
     "@types/bun": "latest",
+    "oxfmt": "0.73.0",
+    "oxlint": "1.88.0",
     "turbo": "^2.11.3",
     "typescript": "^7.0.2"
   },
