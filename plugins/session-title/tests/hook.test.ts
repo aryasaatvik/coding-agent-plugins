@@ -1,14 +1,35 @@
-import { describe, expect, test } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { spawn } from "bun";
-import { existsSync, mkdtempSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const HOOK = join(import.meta.dir, "../hooks/session-title-hook.js");
+const temporary = mkdtempSync(join(tmpdir(), "session-title-tests-"));
+const HOOK = join(temporary, "hook.js");
+
+beforeAll(async () => {
+  // The hook starts generate.js beside itself; both must come from current source.
+  const build = await Bun.build({
+    entrypoints: [
+      join(import.meta.dir, "../claude-code/hook.ts"),
+      join(import.meta.dir, "../claude-code/generate.ts"),
+    ],
+    outdir: temporary,
+    target: "bun",
+    format: "esm",
+  });
+  if (!build.success) {
+    throw new AggregateError(build.logs, "Failed to build session-title test fixtures");
+  }
+});
+
+afterAll(() => {
+  rmSync(temporary, { recursive: true, force: true });
+});
 
 async function runHook(dataDir: string, prompt: string, transcriptPath = "/nonexistent.jsonl") {
   const proc = spawn({
-    cmd: ["bun", HOOK],
+    cmd: [process.execPath, HOOK],
     stdin: "pipe",
     stdout: "pipe",
     stderr: "pipe",
@@ -31,14 +52,14 @@ async function runHook(dataDir: string, prompt: string, transcriptPath = "/nonex
 
 describe("session-title hook", () => {
   test("ordinary prompts pass through when nothing is pending", async () => {
-    const dataDir = mkdtempSync(join(tmpdir(), "session-title-"));
+    const dataDir = mkdtempSync(join(temporary, "data-"));
     const { exitCode, output } = await runHook(dataDir, "hello");
     expect(exitCode).toBe(0);
     expect(output).toBeUndefined();
   });
 
   test("/title blocks the prompt and starts the generator", async () => {
-    const dataDir = mkdtempSync(join(tmpdir(), "session-title-"));
+    const dataDir = mkdtempSync(join(temporary, "data-"));
     const { exitCode, output } = await runHook(dataDir, "/title");
     expect(exitCode).toBe(0);
     expect(output.decision).toBe("block");
@@ -53,7 +74,7 @@ describe("session-title hook", () => {
   });
 
   test("the next prompt applies a pending title once", async () => {
-    const dataDir = mkdtempSync(join(tmpdir(), "session-title-"));
+    const dataDir = mkdtempSync(join(temporary, "data-"));
     await Bun.write(join(dataDir, "session-1.title"), "dotfiles: review skills\n");
 
     const first = await runHook(dataDir, "next message");
