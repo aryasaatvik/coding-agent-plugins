@@ -48,7 +48,7 @@ export function translateCommand(command: string, config: Config = {}): string |
       part.startsWith("--filter=") ||
       part.startsWith("-F=") ||
       part.startsWith("--workspace=") ||
-      part.startsWith("-w=")
+      part.startsWith("-w="),
   );
   if (hasWorkspaceFlag) {
     return null;
@@ -78,7 +78,7 @@ export function translateCommand(command: string, config: Config = {}): string |
       // Handle special flags
       if (args.includes("-g") || args.includes("--global")) {
         const packages = args.filter(
-          (arg) => !arg.startsWith("-") && arg !== "install" && arg !== "i"
+          (arg) => !arg.startsWith("-") && arg !== "install" && arg !== "i",
         );
         return `ni -g ${packages.join(" ")}`.trim();
       }

@@ -1,15 +1,15 @@
 {
   "name": "@coding-agent-plugins/session-title",
   "version": "1.0.0",
-  "description": "Session titles for Claude Code (/title, in the background via OpenCode) and OpenCode (native title hook)",
-  "author": "Saatvik Arya",
-  "license": "MIT",
-  "keywords": [
-    "session",
-    "title",
-    "opencode"
-  ],
   "private": true,
+  "description": "Session titles for Claude Code (/title, in the background via OpenCode) and OpenCode (native title hook)",
+  "keywords": [
+    "opencode",
+    "session",
+    "title"
+  ],
+  "license": "MIT",
+  "author": "Saatvik Arya",
   "type": "module",
   "scripts": {
     "build:claude": "bun build ./claude-code/hook.ts --target bun --format esm --outfile ./hooks/session-title-hook.js && bun build ./claude-code/generate.ts --target bun --format esm --outfile ./hooks/generate.js",

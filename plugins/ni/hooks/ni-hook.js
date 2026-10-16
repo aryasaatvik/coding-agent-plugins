@@ -39,10 +39,7 @@ async function loadConfigFile(path) {
   }
 }
 async function loadConfig(cwd, globalConfigPath = join(process.env.HOME || "~", ".config", "ni-plugin", "config.json")) {
-  const configPaths = [
-    join(cwd, ".ni-plugin.json"),
-    globalConfigPath
-  ];
+  const configPaths = [join(cwd, ".ni-plugin.json"), globalConfigPath];
   for (const path of configPaths) {
     const config = await loadConfigFile(path);
     if (config !== null) {

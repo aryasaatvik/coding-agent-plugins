@@ -30,16 +30,13 @@ export function validateConfig(config: unknown): Config {
   const defaults = getDefaultConfig();
 
   const validated: Config = {
-    enabled:
-      typeof c.enabled === "boolean" ? c.enabled : defaults.enabled,
-    dryRun:
-      typeof c.dryRun === "boolean" ? c.dryRun : defaults.dryRun,
+    enabled: typeof c.enabled === "boolean" ? c.enabled : defaults.enabled,
+    dryRun: typeof c.dryRun === "boolean" ? c.dryRun : defaults.dryRun,
     debug: typeof c.debug === "boolean" ? c.debug : defaults.debug,
     disabledPackageManagers: Array.isArray(c.disabledPackageManagers)
       ? c.disabledPackageManagers.filter(
           (pm): pm is PackageManager =>
-            typeof pm === "string" &&
-            ["npm", "yarn", "pnpm", "bun", "npx", "bunx"].includes(pm)
+            typeof pm === "string" && ["npm", "yarn", "pnpm", "bun", "npx", "bunx"].includes(pm),
         )
       : defaults.disabledPackageManagers,
   };
@@ -73,10 +70,7 @@ export async function loadConfig(
   cwd: string,
   globalConfigPath = join(process.env.HOME || "~", ".config", "ni-plugin", "config.json"),
 ): Promise<Config> {
-  const configPaths = [
-    join(cwd, ".ni-plugin.json"),
-    globalConfigPath,
-  ];
+  const configPaths = [join(cwd, ".ni-plugin.json"), globalConfigPath];
 
   for (const path of configPaths) {
     const config = await loadConfigFile(path);

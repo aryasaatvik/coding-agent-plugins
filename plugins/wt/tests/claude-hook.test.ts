@@ -27,7 +27,7 @@ async function runHook(toolName: string, toolInput: Record<string, unknown>) {
       hook_event_name: "PreToolUse",
       tool_name: toolName,
       tool_input: toolInput,
-    })
+    }),
   );
   proc.stdin.end();
   const stdout = await Bun.readableStreamToText(proc.stdout);

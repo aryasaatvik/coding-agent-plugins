@@ -9,21 +9,11 @@
     "bunfig.toml",
     "package.json"
   ],
-  "globalEnv": [
-    "NODE_ENV",
-    "CLAUDE_PLUGIN_ROOT"
-  ],
+  "globalEnv": ["NODE_ENV", "CLAUDE_PLUGIN_ROOT"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        "hooks/**/*.js",
-        "opencode/**/*.js",
-        "!**/*.ts"
-      ],
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "hooks/**/*.js", "opencode/**/*.js", "!**/*.ts"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "shared/**/*.ts",
@@ -35,43 +25,23 @@
       "cache": true
     },
     "build:claude": {
-      "outputs": [
-        "hooks/**/*.js"
-      ],
-      "inputs": [
-        "shared/**/*.ts",
-        "claude-code/**/*.ts"
-      ],
+      "outputs": ["hooks/**/*.js"],
+      "inputs": ["shared/**/*.ts", "claude-code/**/*.ts"],
       "cache": true
     },
     "build:opencode": {
-      "outputs": [
-        "opencode/**/*.js"
-      ],
-      "inputs": [
-        "shared/**/*.ts",
-        "opencode/**/*.ts"
-      ],
+      "outputs": ["opencode/**/*.js"],
+      "inputs": ["shared/**/*.ts", "opencode/**/*.ts"],
       "cache": true
     },
     "test": {
-      "dependsOn": [
-        "build"
-      ],
-      "outputs": [
-        "coverage/**"
-      ],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "!README.md",
-        "!CHANGELOG.md"
-      ],
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["$TURBO_DEFAULT$", "!README.md", "!CHANGELOG.md"],
       "cache": true
     },
     "dev": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },

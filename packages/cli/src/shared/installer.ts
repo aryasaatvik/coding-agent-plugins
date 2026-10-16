@@ -5,18 +5,13 @@
 import { join } from "path";
 import { $ } from "bun";
 import { existsSync } from "fs";
-import type {
-  PluginConfig,
-  PlatformInfo,
-  InstallOptions,
-  InstallResult,
-} from "./types";
+import type { PluginConfig, PlatformInfo, InstallOptions, InstallResult } from "./types";
 
 export class PluginInstaller {
   constructor(
     private plugin: PluginConfig,
     private platforms: PlatformInfo,
-    private options: InstallOptions
+    private options: InstallOptions,
   ) {}
 
   async install(): Promise<InstallResult[]> {
@@ -47,12 +42,7 @@ export class PluginInstaller {
 
       const claudeDir = this.platforms.claudeCode.path!;
       const cacheDir = join(claudeDir, "plugins", "cache", this.plugin.name);
-      const marketplaceDir = join(
-        claudeDir,
-        "plugins",
-        "marketplaces",
-        "coding-agent-plugins"
-      );
+      const marketplaceDir = join(claudeDir, "plugins", "marketplaces", "coding-agent-plugins");
 
       // Clone/update marketplace repository
       if (existsSync(marketplaceDir) && existsSync(join(marketplaceDir, ".git"))) {
@@ -132,7 +122,13 @@ export class PluginInstaller {
       }
 
       // Copy the built plugin file from cache
-      const sourceFile = join(repoCacheDir, "plugins", this.plugin.name, "opencode", `${this.plugin.name}-plugin.js`);
+      const sourceFile = join(
+        repoCacheDir,
+        "plugins",
+        this.plugin.name,
+        "opencode",
+        `${this.plugin.name}-plugin.js`,
+      );
       if (!existsSync(sourceFile)) {
         throw new Error(`Plugin file not found in repository: ${sourceFile}`);
       }
@@ -157,7 +153,13 @@ export class PluginInstaller {
   private async updateInstalledPlugins(cacheDir: string): Promise<void> {
     const claudeDir = this.platforms.claudeCode.path!;
     const installedJson = join(claudeDir, "plugins", "installed_plugins.json");
-    const pluginJsonPath = join(cacheDir, "plugins", this.plugin.name, ".claude-plugin", "plugin.json");
+    const pluginJsonPath = join(
+      cacheDir,
+      "plugins",
+      this.plugin.name,
+      ".claude-plugin",
+      "plugin.json",
+    );
 
     // Get plugin version
     const pluginJsonFile = Bun.file(pluginJsonPath);

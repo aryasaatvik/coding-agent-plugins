@@ -6,11 +6,7 @@ import { join } from "node:path";
 
 const HOOK = join(import.meta.dir, "../hooks/session-title-hook.js");
 
-async function runHook(
-  dataDir: string,
-  prompt: string,
-  transcriptPath = "/nonexistent.jsonl",
-) {
+async function runHook(dataDir: string, prompt: string, transcriptPath = "/nonexistent.jsonl") {
   const proc = spawn({
     cmd: ["bun", HOOK],
     stdin: "pipe",
@@ -58,10 +54,7 @@ describe("session-title hook", () => {
 
   test("the next prompt applies a pending title once", async () => {
     const dataDir = mkdtempSync(join(tmpdir(), "session-title-"));
-    await Bun.write(
-      join(dataDir, "session-1.title"),
-      "dotfiles: review skills\n",
-    );
+    await Bun.write(join(dataDir, "session-1.title"), "dotfiles: review skills\n");
 
     const first = await runHook(dataDir, "next message");
     expect(first.output).toEqual({

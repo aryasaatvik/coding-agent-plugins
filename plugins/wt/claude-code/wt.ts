@@ -12,11 +12,7 @@
  */
 
 import { loadConfig } from "../shared/config";
-import {
-  analyzeAgent,
-  analyzeCommand,
-  analyzeEnterWorktree,
-} from "../shared/translator";
+import { analyzeAgent, analyzeCommand, analyzeEnterWorktree } from "../shared/translator";
 import type { Config, WorktreeSuggestion } from "../shared/types";
 
 interface HookInput {
@@ -38,20 +34,17 @@ interface HookOutput {
   systemMessage?: string;
 }
 
-function analyze(
-  { tool_name, tool_input }: HookInput,
-  config: Config
-): WorktreeSuggestion | null {
+function analyze({ tool_name, tool_input }: HookInput, config: Config): WorktreeSuggestion | null {
   switch (tool_name) {
     case "Bash": {
       const result =
-        typeof tool_input.command === "string"
-          ? analyzeCommand(tool_input.command, config)
-          : null;
-      return result && {
-        ...result,
-        reason: `${result.reason} After \`wt new\`, enter the worktree with EnterWorktree \`path\` (the path \`git worktree list\` shows).`,
-      };
+        typeof tool_input.command === "string" ? analyzeCommand(tool_input.command, config) : null;
+      return (
+        result && {
+          ...result,
+          reason: `${result.reason} After \`wt new\`, enter the worktree with EnterWorktree \`path\` (the path \`git worktree list\` shows).`,
+        }
+      );
     }
     case "EnterWorktree":
       return analyzeEnterWorktree(tool_input);
@@ -74,7 +67,10 @@ async function main() {
     }
 
     if (config.debug) {
-      console.error(`[wt-plugin] Processing ${hookInput.tool_name}:`, JSON.stringify(hookInput.tool_input));
+      console.error(
+        `[wt-plugin] Processing ${hookInput.tool_name}:`,
+        JSON.stringify(hookInput.tool_input),
+      );
       console.error(`[wt-plugin] Config:`, JSON.stringify(config));
     }
 

@@ -24,19 +24,19 @@ to install dependencies — so the new worktree is ready to work in immediately.
 
 ## 🎯 How It Works
 
-The plugin cannot mechanically *rewrite* `git worktree add` into `wt` the way a
+The plugin cannot mechanically _rewrite_ `git worktree add` into `wt` the way a
 package-manager translator can: `git worktree add` takes an explicit path,
 whereas `wt new` owns the worktree path and adds side effects (file sync + install).
 So instead of a silent rewrite it **denies** the raw command and hands the agent a
 concrete suggestion — the agent re-issues `wt new …` and reads wt's output to learn
 the real worktree path.
 
-| `git worktree add …` | suggestion |
-|---|---|
-| `git worktree add -b feature/x ../x main` | `wt new feature/x main` |
-| `git worktree add -b feat ../feat` | `wt new feat` |
-| `git worktree add ../x existing-branch` | `wt new existing-branch` |
-| `git worktree add ../x-feature` | `wt new x-feature` |
+| `git worktree add …`                      | suggestion               |
+| ----------------------------------------- | ------------------------ |
+| `git worktree add -b feature/x ../x main` | `wt new feature/x main`  |
+| `git worktree add -b feat ../feat`        | `wt new feat`            |
+| `git worktree add ../x existing-branch`   | `wt new existing-branch` |
+| `git worktree add ../x-feature`           | `wt new x-feature`       |
 
 - **Claude Code** — a `PreToolUse` hook on `Bash`, `EnterWorktree`, and `Agent` returns `permissionDecision: "deny"` with the suggestion as the reason.
 - **OpenCode 2** — a `tool.execute.before` hook on the `shell` tool throws with the suggestion (OpenCode aborts the tool and shows the message). V1 is not supported.
@@ -53,11 +53,11 @@ Create a `.wt-plugin.json` in your project root or `~/.config/wt-plugin/config.j
 }
 ```
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `enabled` | boolean | `true` | Enable/disable the plugin |
-| `dryRun` | boolean | `false` | Advise (systemMessage) instead of blocking |
-| `debug` | boolean | `false` | Enable debug logging |
+| Option    | Type    | Default | Description                                |
+| --------- | ------- | ------- | ------------------------------------------ |
+| `enabled` | boolean | `true`  | Enable/disable the plugin                  |
+| `dryRun`  | boolean | `false` | Advise (systemMessage) instead of blocking |
+| `debug`   | boolean | `false` | Enable debug logging                       |
 
 ### Bypassing for a single command
 

@@ -96,6 +96,7 @@ bun run install-plugins
 ## 📋 Prerequisites
 
 - **[Bun](https://bun.sh)** - Runtime for installer and builds
+
   ```bash
   curl -fsSL https://bun.sh/install | bash
   ```
@@ -241,6 +242,7 @@ Use the `/release` slash command in Claude Code:
 ```
 
 The command will guide you through:
+
 1. Selecting which plugin to release
 2. Choosing the new version (with semver suggestions)
 3. Updating version files and changelog
@@ -252,6 +254,7 @@ The command will guide you through:
 If you prefer to release manually:
 
 1. **Update version files** (3 files must be synchronized):
+
    ```bash
    # plugins/<plugin>/package.json
    # plugins/<plugin>/.claude-plugin/plugin.json
@@ -259,11 +262,13 @@ If you prefer to release manually:
    ```
 
 2. **Update changelog**:
+
    ```bash
    # Add entry to plugins/<plugin>/CHANGELOG.md
    ```
 
 3. **Create release commit**:
+
    ```bash
    git add plugins/<plugin>/package.json \
            plugins/<plugin>/.claude-plugin/plugin.json \
@@ -273,6 +278,7 @@ If you prefer to release manually:
    ```
 
 4. **Create and push tag**:
+
    ```bash
    git tag -a "<plugin>@<version>" -m "Release <plugin>@<version>"
    git push origin main
@@ -298,6 +304,7 @@ not apply here.
 ### Release Assets
 
 Each plugin release includes:
+
 - `<plugin-name>-plugin.tar.gz` - Plugin distribution tarball
 - `checksums.txt` - SHA256 checksums for verification
 

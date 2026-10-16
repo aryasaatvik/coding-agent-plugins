@@ -2,12 +2,7 @@ import { describe, test, expect, beforeEach, afterEach } from "bun:test";
 import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "node:os";
-import {
-  getDefaultConfig,
-  validateConfig,
-  loadConfigFile,
-  loadConfig,
-} from "../shared/config";
+import { getDefaultConfig, validateConfig, loadConfigFile, loadConfig } from "../shared/config";
 import type { Config } from "../shared/types";
 
 let TEST_DIR: string;
@@ -203,7 +198,7 @@ describe("loadConfig", () => {
       JSON.stringify({
         enabled: false,
         debug: true,
-      })
+      }),
     );
 
     // Create global config (should be ignored)
@@ -212,7 +207,7 @@ describe("loadConfig", () => {
       JSON.stringify({
         enabled: true,
         debug: false,
-      })
+      }),
     );
 
     const result = await loadConfig(TEST_DIR, globalConfig);
@@ -229,7 +224,7 @@ describe("loadConfig", () => {
       JSON.stringify({
         enabled: false,
         dryRun: true,
-      })
+      }),
     );
 
     const result = await loadConfig(TEST_DIR, globalConfig);
@@ -256,7 +251,7 @@ describe("loadConfig", () => {
       globalConfig,
       JSON.stringify({
         debug: true,
-      })
+      }),
     );
 
     const result = await loadConfig(TEST_DIR, globalConfig);

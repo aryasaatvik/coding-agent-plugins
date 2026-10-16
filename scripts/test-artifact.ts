@@ -32,12 +32,18 @@ try {
     // A project config and explicit plugin-data dir keep hook smoke tests local.
     await Bun.write(join(extracted, `.${name}-plugin.json`), "{}");
     const hook = name === "session-title" ? "session-title-hook.js" : `${name}-hook.js`;
-    const input = Buffer.from(JSON.stringify({
-      session_id: "artifact", cwd: extracted, prompt: "hello",
-      tool_name: "Bash", tool_input: { command: "ls" },
-    }));
+    const input = Buffer.from(
+      JSON.stringify({
+        session_id: "artifact",
+        cwd: extracted,
+        prompt: "hello",
+        tool_name: "Bash",
+        tool_input: { command: "ls" },
+      }),
+    );
     await $`${process.execPath} ${join(extracted, "hooks", hook)} < ${input}`.env({
-      ...process.env, CLAUDE_PLUGIN_DATA: extracted,
+      ...process.env,
+      CLAUDE_PLUGIN_DATA: extracted,
     });
   }
   const cli = join(root, "packages/cli");
@@ -51,7 +57,9 @@ try {
   const globalconfig = join(temporary, "global-npmrc");
   await Bun.write(userconfig, "");
   await Bun.write(globalconfig, "");
-  await $`npm install ${archive} --offline --ignore-scripts --no-audit --no-fund --cache ${join(temporary, "cache")} --userconfig ${userconfig} --globalconfig ${globalconfig}`.cwd(consumer);
+  await $`npm install ${archive} --offline --ignore-scripts --no-audit --no-fund --cache ${join(temporary, "cache")} --userconfig ${userconfig} --globalconfig ${globalconfig}`.cwd(
+    consumer,
+  );
   const binary = join(consumer, "node_modules/.bin/coding-agent-plugins");
   const help = await $`${binary} --help`.cwd(consumer).text();
   const version = await $`${binary} --version`.cwd(consumer).text();

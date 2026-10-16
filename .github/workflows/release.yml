@@ -3,14 +3,14 @@ name: Release Plugin
 on:
   push:
     tags:
-      - '*@*'  # Match namespace@version pattern (e.g., ni@1.0.0)
+      - "*@*" # Match namespace@version pattern (e.g., ni@1.0.0)
   workflow_dispatch:
     inputs:
       plugin:
-        description: 'Plugin name'
+        description: "Plugin name"
         required: true
       version:
-        description: 'Version (e.g., 1.0.0)'
+        description: "Version (e.g., 1.0.0)"
         required: true
 
 permissions:

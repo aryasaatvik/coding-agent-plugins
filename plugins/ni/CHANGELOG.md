@@ -10,16 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2026-09-23
 
 ### Changed
+
 - Claude Code hook rewrites commands silently: no `systemMessage` or permission reason in the transcript
 - Claude Code hook no longer auto-approves translated commands; the rewritten command goes through the session's permission mode and rules
 - Dry run only reports the translation and leaves the command unchanged
 
 ### Fixed
+
 - Rewrites keep other Bash tool input fields (`description`, `timeout`, `run_in_background`)
 
 ## [1.0.1] - 2025-12-03
 
 ### Fixed
+
 - Don't translate commands with workspace/filter flags (`--filter`, `-F`, `--workspace`, `-w`)
   - These pnpm/npm/yarn monorepo features are not supported by ni
   - Commands with these flags now pass through unchanged
@@ -27,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-11-19
 
 ### Added
+
 - Universal package manager command translation
 - Dual platform support (Claude Code & OpenCode)
 - Smart command detection and translation for npm, yarn, pnpm, and bun
@@ -38,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation with usage examples
 
 ### Features
+
 - Automatically translates `npm install` → `ni`
 - Automatically translates `npm run dev` → `nr dev`
 - Automatically translates `yarn add` → `ni`

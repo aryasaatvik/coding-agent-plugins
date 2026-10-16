@@ -10,22 +10,14 @@ import { existsSync } from "node:fs";
 import { basename, join } from "node:path";
 import type { Plugin } from "@opencode/plugin";
 import type { SessionTitle } from "@opencode/plugin/promise/session";
-import {
-  CATEGORY_INSTRUCTION,
-  formatCategorized,
-  formatTitle,
-} from "../shared/title";
+import { CATEGORY_INSTRUCTION, formatCategorized, formatTitle } from "../shared/title";
 
 export default {
   id: "session-title",
   async setup(ctx) {
     const registration = await ctx.session.hook("title", async (event) => {
       const prefix = repositoryName(ctx.location.project.directory);
-      const prompt = composePrompt(
-        event.system,
-        event.messages,
-        prefix === undefined,
-      );
+      const prompt = composePrompt(event.system, event.messages, prefix === undefined);
       if (!prompt) return;
 
       try {

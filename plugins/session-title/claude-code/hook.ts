@@ -23,21 +23,14 @@ interface HookInput {
 }
 
 const input: HookInput = JSON.parse(await Bun.stdin.text());
-const dataDir =
-  process.env.CLAUDE_PLUGIN_DATA ??
-  join(homedir(), ".cache", "claude-session-title");
+const dataDir = process.env.CLAUDE_PLUGIN_DATA ?? join(homedir(), ".cache", "claude-session-title");
 const pendingFile = join(dataDir, `${input.session_id}.title`);
 
 if (isTitleCommand(input.prompt)) {
   mkdirSync(dataDir, { recursive: true });
   const generator = spawn(
     process.execPath,
-    [
-      join(import.meta.dir, "generate.js"),
-      input.transcript_path,
-      input.cwd,
-      pendingFile,
-    ],
+    [join(import.meta.dir, "generate.js"), input.transcript_path, input.cwd, pendingFile],
     { detached: true, stdio: "ignore" },
   );
   generator.unref();

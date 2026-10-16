@@ -61,11 +61,8 @@ try {
 
   const generated = result.stdout.toString();
   const title =
-    prefix === undefined
-      ? formatCategorized(generated)
-      : formatTitle(prefix, generated);
-  if (!title)
-    throw new Error(`no title in model output: ${JSON.stringify(generated)}`);
+    prefix === undefined ? formatCategorized(generated) : formatTitle(prefix, generated);
+  if (!title) throw new Error(`no title in model output: ${JSON.stringify(generated)}`);
 
   const temporary = `${pendingFile}.${process.pid}.tmp`;
   await Bun.write(temporary, title);
@@ -80,14 +77,7 @@ try {
 
 function gitRepositoryName(directory: string) {
   const result = Bun.spawnSync(
-    [
-      "git",
-      "-C",
-      directory,
-      "rev-parse",
-      "--path-format=absolute",
-      "--git-common-dir",
-    ],
+    ["git", "-C", directory, "rev-parse", "--path-format=absolute", "--git-common-dir"],
     { stdin: "ignore", stderr: "ignore" },
   );
   if (!result.success) return;

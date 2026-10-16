@@ -4,17 +4,17 @@ Use the Bun version in the root `packageManager` field (`bun@1.3.2`). Run
 `bun install --frozen-lockfile` from the repository root. npm is also needed for
 the offline installed CLI consumer check; packaging uses `tar`.
 
-| Command | Meaning |
-| --- | --- |
-| `bun run format` | Format maintained source, config, and docs with oxfmt. |
-| `bun run format:check` | Check formatting without writing files. |
-| `bun run lint` | Run oxlint; warnings fail. |
-| `bun run typecheck` | Check plugins, CLI, scripts, and generator config with the root TypeScript config. |
-| `bun run test` | Run the ordinary offline plugin tests. |
-| `bun run check` | Run formatting, lint, types, and ordinary tests in that order. |
-| `bun run build` | Build Claude Code hooks, OpenCode bundles, and the npm CLI. |
-| `bun run test:artifact` | Package and smoke-test existing build output; run build first. |
-| `bun run release:check` | Run check, build, and artifact validation before publication. |
+| Command                 | Meaning                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| `bun run format`        | Format maintained source, config, and docs with oxfmt.                             |
+| `bun run format:check`  | Check formatting without writing files.                                            |
+| `bun run lint`          | Run oxlint; warnings fail.                                                         |
+| `bun run typecheck`     | Check plugins, CLI, scripts, and generator config with the root TypeScript config. |
+| `bun run test`          | Run the ordinary offline plugin tests.                                             |
+| `bun run check`         | Run formatting, lint, types, and ordinary tests in that order.                     |
+| `bun run build`         | Build Claude Code hooks, OpenCode bundles, and the npm CLI.                        |
+| `bun run test:artifact` | Package and smoke-test existing build output; run build first.                     |
+| `bun run release:check` | Run check, build, and artifact validation before publication.                      |
 
 Generated `plugins/*/hooks/*.js`, `plugins/*/opencode/*-plugin.js`, and all
 Handlebars (`.hbs`) templates are excluded from formatting and linting. Change

@@ -19,9 +19,7 @@ describe("validateConfig", () => {
   });
 
   test("coerces invalid field types to defaults", () => {
-    expect(
-      validateConfig({ enabled: "yes", dryRun: 1, debug: null })
-    ).toEqual(getDefaultConfig());
+    expect(validateConfig({ enabled: "yes", dryRun: 1, debug: null })).toEqual(getDefaultConfig());
   });
 
   test("passes through valid values", () => {
@@ -30,7 +28,7 @@ describe("validateConfig", () => {
         enabled: false,
         dryRun: true,
         debug: true,
-      })
+      }),
     ).toEqual({
       enabled: false,
       dryRun: true,
@@ -39,8 +37,6 @@ describe("validateConfig", () => {
   });
 
   test("drops unknown keys such as the removed defaultBase", () => {
-    expect(validateConfig({ defaultBase: "develop" })).toEqual(
-      getDefaultConfig()
-    );
+    expect(validateConfig({ defaultBase: "develop" })).toEqual(getDefaultConfig());
   });
 });

@@ -5,11 +5,7 @@
  */
 
 import { parseArgs } from "util";
-import type {
-  CLIOptions,
-  InstallResult,
-  PluginConfig,
-} from "../shared/types.js";
+import type { CLIOptions, InstallResult, PluginConfig } from "../shared/types.js";
 import { detectPlatforms, checkDependencies } from "../shared/detector.js";
 import {
   showIntro,
@@ -51,9 +47,7 @@ export async function install(args: string[]): Promise<void> {
 
   // Check if any platform is detected
   if (!platforms.claudeCode.detected && !platforms.openCode.detected) {
-    log.error(
-      "No supported platforms detected. Install Claude Code or OpenCode first."
-    );
+    log.error("No supported platforms detected. Install Claude Code or OpenCode first.");
     showOutro(false);
     process.exit(1);
   }
@@ -83,9 +77,7 @@ export async function install(args: string[]): Promise<void> {
   }
 
   // Filter to available plugins
-  const pluginsToInstall = marketplace.plugins.filter((p) =>
-    selectedPlugins.includes(p.name)
-  );
+  const pluginsToInstall = marketplace.plugins.filter((p) => selectedPlugins.includes(p.name));
 
   if (pluginsToInstall.length === 0) {
     log.warn("No plugins selected");
@@ -106,7 +98,7 @@ export async function install(args: string[]): Promise<void> {
   if (!options.yes && !options.dryRun) {
     const confirmed = await confirmInstall(
       pluginsToInstall.map((p) => p.name),
-      targetPlatforms
+      targetPlatforms,
     );
 
     if (!confirmed) {
@@ -183,4 +175,3 @@ function parseCLIArgs(args: string[]): CLIOptions {
     process.exit(1);
   }
 }
-

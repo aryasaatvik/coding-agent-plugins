@@ -40,9 +40,11 @@ describe("parseWorktreeAdd", () => {
   });
 
   test("handles `git -C <dir>` prefix", () => {
-    expect(
-      parseWorktreeAdd("git -C /repo worktree add -b feat ../feat develop")
-    ).toEqual({ branch: "feat", base: "develop", checkoutExisting: false });
+    expect(parseWorktreeAdd("git -C /repo worktree add -b feat ../feat develop")).toEqual({
+      branch: "feat",
+      base: "develop",
+      checkoutExisting: false,
+    });
   });
 
   test("-B behaves like -b", () => {
@@ -103,9 +105,9 @@ describe("analyzeCommand - suggestions", () => {
   test("base note names origin/HEAD when no base is given", () => {
     const r = analyzeCommand("git worktree add -b feat ../feat");
     expect(r?.reason).toContain("`origin/HEAD`");
-    expect(
-      analyzeCommand("git worktree add -b feat ../feat develop")?.reason
-    ).not.toContain("origin/HEAD");
+    expect(analyzeCommand("git worktree add -b feat ../feat develop")?.reason).not.toContain(
+      "origin/HEAD",
+    );
   });
 });
 
@@ -124,9 +126,7 @@ describe("analyzeCommand - passthrough", () => {
   });
 
   test("WT_HOOK_OFF=1 prefix bypasses the nudge", () => {
-    expect(
-      analyzeCommand("WT_HOOK_OFF=1 git worktree add -b feat ../feat")
-    ).toBeNull();
+    expect(analyzeCommand("WT_HOOK_OFF=1 git worktree add -b feat ../feat")).toBeNull();
   });
 
   test("handles empty / whitespace input", () => {
@@ -163,22 +163,14 @@ describe("analyzeAgent", () => {
 
 describe("parseWorktreeAdd - command position", () => {
   test("matches after env assignments, git options, and shell separators", () => {
-    expect(
-      parseWorktreeAdd("FOO=1 git -c a=b worktree add -b x ../x")?.branch
-    ).toBe("x");
-    expect(
-      parseWorktreeAdd("cd repo && git worktree add -b y ../y")?.branch
-    ).toBe("y");
-    expect(
-      parseWorktreeAdd("git status; git worktree add -b z ../z")?.branch
-    ).toBe("z");
+    expect(parseWorktreeAdd("FOO=1 git -c a=b worktree add -b x ../x")?.branch).toBe("x");
+    expect(parseWorktreeAdd("cd repo && git worktree add -b y ../y")?.branch).toBe("y");
+    expect(parseWorktreeAdd("git status; git worktree add -b z ../z")?.branch).toBe("z");
   });
 
   test("ignores the phrase inside other commands' text", () => {
     expect(parseWorktreeAdd('echo "git worktree add -b x ../x"')).toBeNull();
-    expect(
-      parseWorktreeAdd("python3 - <<EOF\nprint('git and worktree add')\nEOF")
-    ).toBeNull();
+    expect(parseWorktreeAdd("python3 - <<EOF\nprint('git and worktree add')\nEOF")).toBeNull();
     expect(parseWorktreeAdd("grep -n git notes.md worktree add")).toBeNull();
   });
 });

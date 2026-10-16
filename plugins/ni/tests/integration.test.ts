@@ -12,7 +12,9 @@ afterAll(() => rmSync(directory, { recursive: true, force: true }));
 const CLAUDE_HOOK = join(import.meta.dir, "../claude-code/ni.ts");
 
 describe("Claude Code hook integration", () => {
-  async function runHook(input: any): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  async function runHook(
+    input: any,
+  ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     const proc = spawn({
       cmd: ["bun", "run", CLAUDE_HOOK],
       stdin: "pipe",
@@ -178,9 +180,7 @@ describe("Claude Code hook integration", () => {
     expect(result.exitCode).toBe(0);
 
     const output = JSON.parse(result.stdout);
-    expect(output.hookSpecificOutput.updatedInput.command).toBe(
-      "ni -g typescript"
-    );
+    expect(output.hookSpecificOutput.updatedInput.command).toBe("ni -g typescript");
   });
 
   test("handles yarn shorthand", async () => {
@@ -224,9 +224,7 @@ describe("Claude Code hook integration", () => {
     expect(output).toHaveProperty("hookSpecificOutput");
     expect(output.hookSpecificOutput).toHaveProperty("hookEventName");
     expect(output.hookSpecificOutput).not.toHaveProperty("permissionDecision");
-    expect(output.hookSpecificOutput).not.toHaveProperty(
-      "permissionDecisionReason"
-    );
+    expect(output.hookSpecificOutput).not.toHaveProperty("permissionDecisionReason");
     expect(output).not.toHaveProperty("systemMessage");
     expect(output.hookSpecificOutput).toHaveProperty("updatedInput");
 

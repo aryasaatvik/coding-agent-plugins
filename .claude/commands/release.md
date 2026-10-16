@@ -50,6 +50,7 @@ Before proceeding, verify:
 Update version in **exactly 3 files** (atomically):
 
 1. **`plugins/<plugin>/package.json`**:
+
    ```json
    {
      "version": "<new-version>"
@@ -57,6 +58,7 @@ Update version in **exactly 3 files** (atomically):
    ```
 
 2. **`plugins/<plugin>/.claude-plugin/plugin.json`**:
+
    ```json
    {
      "version": "<new-version>"
@@ -86,30 +88,38 @@ Update version in **exactly 3 files** (atomically):
 2. **Changelog format** (Keep a Changelog style):
 
    For **plugin-specific** CHANGELOG (`plugins/<plugin>/CHANGELOG.md`):
+
    ```markdown
    ## [<version>] - YYYY-MM-DD
 
    ### Added
+
    - New features
 
    ### Changed
+
    - Changes in existing functionality
 
    ### Fixed
+
    - Bug fixes
    ```
 
    For **root** CHANGELOG with prefix:
+
    ```markdown
    ## [<plugin>@<version>] - YYYY-MM-DD
 
    ### Added
+
    - New features
 
    ### Changed
+
    - Changes in existing functionality
 
    ### Fixed
+
    - Bug fixes
    ```
 
@@ -118,6 +128,7 @@ Update version in **exactly 3 files** (atomically):
 ### Phase 4: Create Release Commit and Tag
 
 1. **Stage the changed files**:
+
    ```bash
    git add plugins/<plugin>/package.json \
            plugins/<plugin>/.claude-plugin/plugin.json \
@@ -126,11 +137,13 @@ Update version in **exactly 3 files** (atomically):
    ```
 
 2. **Create release commit**:
+
    ```bash
    git commit -m "chore(release): <plugin>@<version>"
    ```
 
 3. **Create annotated tag**:
+
    ```bash
    git tag -a "<plugin>@<version>" -m "Release <plugin>@<version>"
    ```
@@ -143,6 +156,7 @@ Update version in **exactly 3 files** (atomically):
 ### Phase 5: Push and Monitor
 
 1. **Push commit and tag**:
+
    ```bash
    git push origin main
    git push origin <plugin>@<version>
@@ -151,14 +165,17 @@ Update version in **exactly 3 files** (atomically):
 2. **Wait briefly** for GitHub Actions to register the workflow
 
 3. **Get the workflow run**:
+
    ```bash
    gh run list --workflow=release.yml --limit=1
    ```
 
 4. **Monitor the workflow** (show user the URL):
+
    ```bash
    gh run watch <run-id>
    ```
+
    Or provide the URL: `https://github.com/<owner>/<repo>/actions`
 
 5. **When complete, get the release**:
@@ -209,6 +226,7 @@ Update version in **exactly 3 files** (atomically):
 ## Examples
 
 **Example 1: Patch release**
+
 ```
 User: /release
 Assistant: Which plugin would you like to release?
@@ -227,6 +245,7 @@ Assistant: [Updates files, creates changelog entry, commits, tags, pushes]
 ```
 
 **Example 2: Pre-release**
+
 ```
 User: /release
 Assistant: Which plugin would you like to release?

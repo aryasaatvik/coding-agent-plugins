@@ -57,10 +57,7 @@ describe("OpenCode session-title plugin", () => {
 
   test("asks for a category outside a repo", async () => {
     const directory = mkdtempSync(join(tmpdir(), "st-"));
-    const { result, prompt } = await runTitleHook(
-      directory,
-      "Plugins: Quiet NI",
-    );
+    const { result, prompt } = await runTitleHook(directory, "Plugins: Quiet NI");
     expect(result).toBe("plugins: quiet ni");
     expect(prompt).toContain("category: title");
   });

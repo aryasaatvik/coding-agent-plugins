@@ -18,12 +18,7 @@ var dataDir = process.env.CLAUDE_PLUGIN_DATA ?? join(homedir(), ".cache", "claud
 var pendingFile = join(dataDir, `${input.session_id}.title`);
 if (isTitleCommand(input.prompt)) {
   mkdirSync(dataDir, { recursive: true });
-  const generator = spawn(process.execPath, [
-    join(import.meta.dir, "generate.js"),
-    input.transcript_path,
-    input.cwd,
-    pendingFile
-  ], { detached: true, stdio: "ignore" });
+  const generator = spawn(process.execPath, [join(import.meta.dir, "generate.js"), input.transcript_path, input.cwd, pendingFile], { detached: true, stdio: "ignore" });
   generator.unref();
   console.log(JSON.stringify({
     decision: "block",
