@@ -1,29 +1,21 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { mkdirSync, writeFileSync, rmSync, existsSync } from "fs";
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from "fs";
 import { join } from "path";
-import {
-  getDefaultConfig,
-  validateConfig,
-  loadConfigFile,
-  loadConfig,
-} from "../shared/config";
+import { tmpdir } from "node:os";
+import { getDefaultConfig, validateConfig, loadConfigFile, loadConfig } from "../shared/config";
 import type { Config } from "../shared/types";
 
-const TEST_DIR = join(import.meta.dir, "fixtures", "config-test");
+let TEST_DIR: string;
+let globalConfig: string;
 
 beforeEach(() => {
-  // Create test directory
-  if (existsSync(TEST_DIR)) {
-    rmSync(TEST_DIR, { recursive: true });
-  }
-  mkdirSync(TEST_DIR, { recursive: true });
+  TEST_DIR = mkdtempSync(join(tmpdir(), "ni-config-"));
+  globalConfig = join(TEST_DIR, "global", "config.json");
+  mkdirSync(join(TEST_DIR, "global"));
 });
 
 afterEach(() => {
-  // Clean up test directory
-  if (existsSync(TEST_DIR)) {
-    rmSync(TEST_DIR, { recursive: true });
-  }
+  rmSync(TEST_DIR, { recursive: true, force: true });
 });
 
 describe("getDefaultConfig", () => {
@@ -199,12 +191,6 @@ describe("loadConfigFile", () => {
 describe("loadConfig", () => {
   test("loads project config first", async () => {
     const projectConfig = join(TEST_DIR, ".ni-plugin.json");
-    const globalConfig = join(
-      process.env.HOME || "~",
-      ".config",
-      "ni-plugin",
-      "config.json"
-    );
 
     // Create project config
     writeFileSync(
@@ -212,97 +198,66 @@ describe("loadConfig", () => {
       JSON.stringify({
         enabled: false,
         debug: true,
-      })
+      }),
     );
 
     // Create global config (should be ignored)
-    mkdirSync(join(process.env.HOME || "~", ".config", "ni-plugin"), {
-      recursive: true,
-    });
     writeFileSync(
       globalConfig,
       JSON.stringify({
         enabled: true,
         debug: false,
-      })
+      }),
     );
 
-    const result = await loadConfig(TEST_DIR);
+    const result = await loadConfig(TEST_DIR, globalConfig);
 
     // Should use project config
     expect(result.enabled).toBe(false);
     expect(result.debug).toBe(true);
-
-    // Clean up global config
-    rmSync(globalConfig);
   });
 
   test("falls back to global config", async () => {
-    const globalConfig = join(
-      process.env.HOME || "~",
-      ".config",
-      "ni-plugin",
-      "config.json"
-    );
-
     // Create global config
-    mkdirSync(join(process.env.HOME || "~", ".config", "ni-plugin"), {
-      recursive: true,
-    });
     writeFileSync(
       globalConfig,
       JSON.stringify({
         enabled: false,
         dryRun: true,
-      })
+      }),
     );
 
-    const result = await loadConfig(TEST_DIR);
+    const result = await loadConfig(TEST_DIR, globalConfig);
 
     // Should use global config
     expect(result.enabled).toBe(false);
     expect(result.dryRun).toBe(true);
-
-    // Clean up
-    rmSync(globalConfig);
   });
 
   test("uses defaults if no config found", async () => {
-    const result = await loadConfig(TEST_DIR);
+    const result = await loadConfig(TEST_DIR, globalConfig);
 
     expect(result).toEqual(getDefaultConfig());
   });
 
   test("handles invalid project config, falls back to global", async () => {
     const projectConfig = join(TEST_DIR, ".ni-plugin.json");
-    const globalConfig = join(
-      process.env.HOME || "~",
-      ".config",
-      "ni-plugin",
-      "config.json"
-    );
 
     // Create invalid project config
     writeFileSync(projectConfig, "{ invalid }");
 
     // Create valid global config
-    mkdirSync(join(process.env.HOME || "~", ".config", "ni-plugin"), {
-      recursive: true,
-    });
     writeFileSync(
       globalConfig,
       JSON.stringify({
         debug: true,
-      })
+      }),
     );
 
-    const result = await loadConfig(TEST_DIR);
+    const result = await loadConfig(TEST_DIR, globalConfig);
 
     // Should fall back to global config
     expect(result.debug).toBe(true);
-
-    // Clean up
-    rmSync(globalConfig);
   });
 });
 

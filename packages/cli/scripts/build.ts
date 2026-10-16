@@ -7,7 +7,6 @@
  */
 
 import { copyFileSync, mkdirSync } from "fs";
-import { join } from "path";
 
 console.log("📦 Building CLI package...\n");
 
@@ -32,10 +31,7 @@ if (!result.success) {
 mkdirSync("./dist/.claude-plugin", { recursive: true });
 
 // Copy marketplace.json to dist
-copyFileSync(
-  "../../.claude-plugin/marketplace.json",
-  "./dist/.claude-plugin/marketplace.json"
-);
+copyFileSync("../../.claude-plugin/marketplace.json", "./dist/.claude-plugin/marketplace.json");
 
 console.log("✓ Bundled CLI to dist/cli.js");
 console.log("✓ Copied marketplace.json to dist/.claude-plugin/");

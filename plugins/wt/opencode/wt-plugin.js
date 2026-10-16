@@ -24,8 +24,8 @@ function worktreeAddArgs(segment) {
     return null;
   return tokens.slice(i + 2);
 }
-function parseWorktreeAdd(command, config = {}) {
-  const rest = command.split(/&&|\|\||[;|\n]/).map(worktreeAddArgs).find((args) => args !== null);
+function parseWorktreeAdd(command, _config = {}) {
+  const rest = command.split(/&&|\|\||[;|\n]/).map(worktreeAddArgs).find((args2) => args2 !== null);
   if (!rest) {
     return null;
   }
@@ -122,7 +122,7 @@ async function loadConfigFile(path) {
     const file = Bun.file(path);
     const content = await file.json();
     return validateConfig(content);
-  } catch (error) {
+  } catch {
     return null;
   }
 }

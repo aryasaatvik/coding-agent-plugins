@@ -90,12 +90,13 @@ cd coding-agent-plugins
 bun install
 
 # Run the installer
-bun install.ts
+bun run install-plugins
 ```
 
 ## 📋 Prerequisites
 
 - **[Bun](https://bun.sh)** - Runtime for installer and builds
+
   ```bash
   curl -fsSL https://bun.sh/install | bash
   ```
@@ -151,16 +152,23 @@ Want to add a new plugin? We welcome contributions!
 5. Write tests and documentation
 6. Submit a pull request
 
-See existing plugins like [`ni`](plugins/ni/) for reference.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the pinned toolchain, validation commands, test safety, and publication limits. Existing plugins like [`ni`](plugins/ni/) provide implementation examples.
 
 ## 📚 Development
 
 This repository uses [Turborepo](https://turbo.build/repo) for efficient monorepo management with intelligent caching and parallel execution.
 
+Before review, run `bun run check`. Before release, run `bun run release:check`
+(formatting, lint, types, offline tests, build, and artifact consumers).
+`bun run test:artifact` checks existing build output, so run `bun run build` first.
+CI runs `check`, build, and artifact validation on pull requests and pushes to
+main using the root Bun pin. The existing tag/manual release workflow runs the
+full release gate.
+
 ### Building Plugins
 
 ```bash
-# Build all plugins
+# Build all plugins and the npm CLI
 bun run build
 
 # Build specific plugin
@@ -235,6 +243,7 @@ Use the `/release` slash command in Claude Code:
 ```
 
 The command will guide you through:
+
 1. Selecting which plugin to release
 2. Choosing the new version (with semver suggestions)
 3. Updating version files and changelog
@@ -246,6 +255,7 @@ The command will guide you through:
 If you prefer to release manually:
 
 1. **Update version files** (3 files must be synchronized):
+
    ```bash
    # plugins/<plugin>/package.json
    # plugins/<plugin>/.claude-plugin/plugin.json
@@ -253,11 +263,13 @@ If you prefer to release manually:
    ```
 
 2. **Update changelog**:
+
    ```bash
    # Add entry to plugins/<plugin>/CHANGELOG.md
    ```
 
 3. **Create release commit**:
+
    ```bash
    git add plugins/<plugin>/package.json \
            plugins/<plugin>/.claude-plugin/plugin.json \
@@ -267,6 +279,7 @@ If you prefer to release manually:
    ```
 
 4. **Create and push tag**:
+
    ```bash
    git tag -a "<plugin>@<version>" -m "Release <plugin>@<version>"
    git push origin main
@@ -274,8 +287,14 @@ If you prefer to release manually:
    ```
 
 5. **Monitor release**:
-   - GitHub Actions will automatically build, test, and package the plugin
+   - GitHub Actions runs `release:check`, then publishes the validated plugin tarball
    - A new release will be created at: `https://github.com/aryasaatvik/coding-agent-plugins/releases/tag/<plugin>@<version>`
+
+Merging a PR does not publish. Tag pushes retain the existing GitHub Release
+behavior; manual dispatch on a branch only validates/packages. The npm CLI's
+existing `prepublishOnly` hook also runs the root release gate. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for limitations and release commands that do
+not apply here.
 
 ### Tag Format
 
@@ -286,6 +305,7 @@ If you prefer to release manually:
 ### Release Assets
 
 Each plugin release includes:
+
 - `<plugin-name>-plugin.tar.gz` - Plugin distribution tarball
 - `checksums.txt` - SHA256 checksums for verification
 

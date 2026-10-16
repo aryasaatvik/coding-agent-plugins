@@ -85,25 +85,19 @@ describe("formatting", () => {
   });
 
   test("does not double the repository prefix", () => {
-    expect(formatTitle("dotfiles", "Dotfiles: review skills")).toBe(
-      "dotfiles: review skills",
-    );
+    expect(formatTitle("dotfiles", "Dotfiles: review skills")).toBe("dotfiles: review skills");
     expect(formatTitle("dotfiles", "dotfiles")).toBeUndefined();
   });
 
   test("keeps the model's category outside a repository", () => {
-    expect(formatCategorized("\nOpenCode: Session Titles\nextra")).toBe(
-      "opencode: session titles",
-    );
+    expect(formatCategorized("\nOpenCode: Session Titles\nextra")).toBe("opencode: session titles");
     expect(formatCategorized("  \n")).toBeUndefined();
   });
 });
 
 describe("repositoryName", () => {
   test("resolves primary checkouts and linked worktrees", () => {
-    expect(repositoryName("/Users/me/Developer/dotfiles/.git\n")).toBe(
-      "dotfiles",
-    );
+    expect(repositoryName("/Users/me/Developer/dotfiles/.git\n")).toBe("dotfiles");
   });
 
   test("handles bare repositories", () => {

@@ -57,10 +57,7 @@ function worktreeAddArgs(segment: string): string[] | null {
  * Returns null when this isn't a `git worktree add`, when a passthrough flag is
  * present, or when no branch can be determined.
  */
-export function parseWorktreeAdd(
-  command: string,
-  config: Config = {}
-): ParsedWorktreeAdd | null {
+export function parseWorktreeAdd(command: string, _config: Config = {}): ParsedWorktreeAdd | null {
   const rest = command
     .split(/&&|\|\||[;|\n]/)
     .map(worktreeAddArgs)
@@ -133,10 +130,7 @@ function buildSuggestion(parsed: ParsedWorktreeAdd): string {
  * `wt` suggestion plus an agent-facing reason. Returns null to leave the
  * command untouched.
  */
-export function analyzeCommand(
-  command: string,
-  config: Config = {}
-): WorktreeSuggestion | null {
+export function analyzeCommand(command: string, config: Config = {}): WorktreeSuggestion | null {
   if (!command || !command.trim()) {
     return null;
   }
@@ -197,9 +191,7 @@ export function analyzeEnterWorktree(input: {
  * Analyze a Claude Code Agent call. `isolation: "worktree"` gives the subagent
  * a Claude-managed worktree, so it gets a wt worktree plus `cd` instead.
  */
-export function analyzeAgent(input: {
-  isolation?: unknown;
-}): WorktreeSuggestion | null {
+export function analyzeAgent(input: { isolation?: unknown }): WorktreeSuggestion | null {
   if (input.isolation !== "worktree") {
     return null;
   }

@@ -19,7 +19,7 @@ export function showOutro(success: boolean) {
 
 export async function showPluginSelector(
   plugins: PluginConfig[],
-  options: { preSelected?: string[] } = {}
+  options: { preSelected?: string[] } = {},
 ): Promise<string[]> {
   const selected = await multiselect({
     message: "Select plugins to install:",
@@ -52,10 +52,7 @@ export function showPlatformDetection(detected: PlatformInfo): void {
   }
 }
 
-export async function confirmInstall(
-  plugins: string[],
-  platforms: string[]
-): Promise<boolean> {
+export async function confirmInstall(plugins: string[], platforms: string[]): Promise<boolean> {
   const result = await confirm({
     message: `Install ${plugins.length} plugin(s) for ${platforms.join(" & ")}?`,
   });
@@ -92,7 +89,7 @@ export function showMissingDependencies(deps: { jq?: boolean; bun?: boolean }): 
   }
 }
 
-export function createSpinner(message: string) {
+export function createSpinner(_message: string) {
   return spinner();
 }
 

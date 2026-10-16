@@ -3,13 +3,7 @@
  */
 
 import { parseArgs } from "util";
-import type {
-  CLIOptions,
-  MarketplaceConfig,
-  PluginConfig,
-  PlatformInfo,
-  InstallResult,
-} from "./types";
+import type { CLIOptions, MarketplaceConfig, InstallResult } from "./types";
 import { detectPlatforms, checkDependencies } from "./detector";
 import {
   showIntro,
@@ -78,9 +72,7 @@ export async function run(args: string[]): Promise<void> {
   }
 
   // Filter to available plugins
-  const pluginsToInstall = marketplace.plugins.filter((p) =>
-    selectedPlugins.includes(p.name)
-  );
+  const pluginsToInstall = marketplace.plugins.filter((p) => selectedPlugins.includes(p.name));
 
   if (pluginsToInstall.length === 0) {
     log.warn("No plugins selected");
@@ -101,7 +93,7 @@ export async function run(args: string[]): Promise<void> {
   if (!options.yes && !options.dryRun) {
     const confirmed = await confirmInstall(
       pluginsToInstall.map((p) => p.name),
-      targetPlatforms
+      targetPlatforms,
     );
 
     if (!confirmed) {

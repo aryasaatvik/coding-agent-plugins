@@ -2,47 +2,44 @@
   "name": "coding-agent-plugins",
   "version": "1.0.3",
   "description": "CLI for managing Claude Code and OpenCode plugins",
-  "type": "module",
+  "keywords": [
+    "claude-code",
+    "cli",
+    "installer",
+    "opencode",
+    "plugins"
+  ],
+  "homepage": "https://github.com/aryasaatvik/coding-agent-plugins#readme",
+  "bugs": {
+    "url": "https://github.com/aryasaatvik/coding-agent-plugins/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Saatvik Arya",
+    "email": "aryasaatvik@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aryasaatvik/coding-agent-plugins.git",
+    "directory": "packages/cli"
+  },
   "bin": {
     "coding-agent-plugins": "./dist/cli.js"
   },
   "files": [
     "dist/"
   ],
+  "type": "module",
   "scripts": {
     "build": "bun scripts/build.ts",
-    "prepublishOnly": "bun run build",
-    "dev": "bun run bin/cli.js",
-    "test": "echo \"No tests yet\" && exit 0"
-  },
-  "dependencies": {
-    "@clack/prompts": "^1.8.1"
+    "prepublishOnly": "cd ../.. && bun run release:check",
+    "dev": "bun run bin/cli.js"
   },
   "devDependencies": {
+    "@clack/prompts": "^1.8.1",
     "@types/bun": "latest"
   },
   "engines": {
     "bun": ">=1.0.0"
-  },
-  "keywords": [
-    "claude-code",
-    "opencode",
-    "plugins",
-    "cli",
-    "installer"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aryasaatvik/coding-agent-plugins.git",
-    "directory": "packages/cli"
-  },
-  "homepage": "https://github.com/aryasaatvik/coding-agent-plugins#readme",
-  "bugs": {
-    "url": "https://github.com/aryasaatvik/coding-agent-plugins/issues"
-  },
-  "author": {
-    "name": "Saatvik Arya",
-    "email": "aryasaatvik@gmail.com"
-  },
-  "license": "MIT"
+  }
 }

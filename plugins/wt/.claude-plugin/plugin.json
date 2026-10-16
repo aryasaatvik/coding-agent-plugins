@@ -9,12 +9,5 @@
   "license": "MIT",
   "repository": "https://github.com/aryasaatvik/coding-agent-plugins",
   "homepage": "https://github.com/aryasaatvik/wt",
-  "keywords": [
-    "wt",
-    "git",
-    "worktree",
-    "git-worktree",
-    "automation",
-    "nudge"
-  ]
+  "keywords": ["wt", "git", "worktree", "git-worktree", "automation", "nudge"]
 }

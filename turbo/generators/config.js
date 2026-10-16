@@ -3,20 +3,26 @@
  */
 module.exports = function generator(plop) {
   // Helper for PascalCase conversion
-  plop.setHelper("pascalCase", (text) => {
-    return text
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join("");
-  });
+  plop.setHelper(
+    "pascalCase",
+    /** @param {string} text */ (text) => {
+      return text
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join("");
+    },
+  );
 
   // Helper for proper case
-  plop.setHelper("properCase", (text) => {
-    return text
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  });
+  plop.setHelper(
+    "properCase",
+    /** @param {string} text */ (text) => {
+      return text
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    },
+  );
 
   // Plugin generator
   plop.setGenerator("plugin", {

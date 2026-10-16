@@ -32,7 +32,7 @@ async function loadConfigFile(path) {
     const file = Bun.file(path);
     const content = await file.json();
     return validateConfig(content);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -75,8 +75,8 @@ function worktreeAddArgs(segment) {
     return null;
   return tokens.slice(i + 2);
 }
-function parseWorktreeAdd(command, config = {}) {
-  const rest = command.split(/&&|\|\||[;|\n]/).map(worktreeAddArgs).find((args) => args !== null);
+function parseWorktreeAdd(command, _config = {}) {
+  const rest = command.split(/&&|\|\||[;|\n]/).map(worktreeAddArgs).find((args2) => args2 !== null);
   if (!rest) {
     return null;
   }
@@ -193,10 +193,10 @@ async function main() {
       process.exit(0);
     }
     if (config.dryRun) {
-      const output = {
+      const output2 = {
         systemMessage: `[DRY RUN] wt-plugin would suggest: \`${result.suggestion}\``
       };
-      console.log(JSON.stringify(output));
+      console.log(JSON.stringify(output2));
       process.exit(0);
     }
     const output = {

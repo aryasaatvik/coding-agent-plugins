@@ -82,21 +82,15 @@ describe("ni - install", () => {
   });
 
   test("npm install @types/node -D → ni @types/node -D", () => {
-    expect(translateCommand("npm install @types/node -D")).toBe(
-      "ni @types/node -D"
-    );
+    expect(translateCommand("npm install @types/node -D")).toBe("ni @types/node -D");
   });
 
   test("yarn add @types/node -D → ni @types/node -D", () => {
-    expect(translateCommand("yarn add @types/node -D")).toBe(
-      "ni @types/node -D"
-    );
+    expect(translateCommand("yarn add @types/node -D")).toBe("ni @types/node -D");
   });
 
   test("npm install -D typescript → ni -D typescript", () => {
-    expect(translateCommand("npm install -D typescript")).toBe(
-      "ni -D typescript"
-    );
+    expect(translateCommand("npm install -D typescript")).toBe("ni -D typescript");
   });
 });
 
@@ -122,9 +116,7 @@ describe("ni - global install", () => {
   });
 
   test("npm install --global typescript → ni -g typescript", () => {
-    expect(translateCommand("npm install --global typescript")).toBe(
-      "ni -g typescript"
-    );
+    expect(translateCommand("npm install --global typescript")).toBe("ni -g typescript");
   });
 });
 
@@ -168,9 +160,7 @@ describe("nr - run", () => {
   });
 
   test("npm run dev -- --port=3000 → nr dev -- --port=3000", () => {
-    expect(translateCommand("npm run dev -- --port=3000")).toBe(
-      "nr dev -- --port=3000"
-    );
+    expect(translateCommand("npm run dev -- --port=3000")).toBe("nr dev -- --port=3000");
   });
 
   test("yarn dev (shorthand) → nr dev", () => {
@@ -182,9 +172,7 @@ describe("nr - run", () => {
   });
 
   test("yarn test -- --coverage → nr test -- --coverage", () => {
-    expect(translateCommand("yarn test -- --coverage")).toBe(
-      "nr test -- --coverage"
-    );
+    expect(translateCommand("yarn test -- --coverage")).toBe("nr test -- --coverage");
   });
 });
 
@@ -322,21 +310,17 @@ describe("edge cases", () => {
   });
 
   test("multiple packages", () => {
-    expect(translateCommand("npm install react react-dom")).toBe(
-      "ni react react-dom"
-    );
+    expect(translateCommand("npm install react react-dom")).toBe("ni react react-dom");
   });
 
   test("scoped packages", () => {
     expect(translateCommand("npm install @types/node @types/react")).toBe(
-      "ni @types/node @types/react"
+      "ni @types/node @types/react",
     );
   });
 
   test("mixed flags and packages", () => {
-    expect(translateCommand("npm install -D -E prettier")).toBe(
-      "ni -D -E prettier"
-    );
+    expect(translateCommand("npm install -D -E prettier")).toBe("ni -D -E prettier");
   });
 });
 

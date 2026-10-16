@@ -57,9 +57,7 @@ export function extractTurns(jsonl: string): Turn[] {
     const parts =
       typeof content === "string"
         ? [content]
-        : (content ?? [])
-            .filter((part) => part.type === "text")
-            .map((part) => part.text ?? "");
+        : (content ?? []).filter((part) => part.type === "text").map((part) => part.text ?? "");
     const text = parts
       .map((part) => part.trim())
       .filter((part) => part && !part.startsWith("<"))
@@ -88,10 +86,7 @@ export function renderConversation(turns: Turn[]): string {
     lines.unshift(line);
     used += line.length;
   }
-  if (first)
-    lines.unshift(
-      `${label(first)}: ${first.text.slice(0, FIRST_PROMPT_BUDGET)}`,
-    );
+  if (first) lines.unshift(`${label(first)}: ${first.text.slice(0, FIRST_PROMPT_BUDGET)}`);
   return lines.join("\n\n");
 }
 
@@ -99,10 +94,7 @@ function label(turn: Turn) {
   return turn.role === "user" ? "User" : "Assistant";
 }
 
-export function composePrompt(
-  conversation: string,
-  categorize: boolean,
-): string {
+export function composePrompt(conversation: string, categorize: boolean): string {
   return [
     TITLE_INSTRUCTION,
     categorize ? CATEGORY_INSTRUCTION : PLAIN_INSTRUCTION,
@@ -146,11 +138,7 @@ export function formatCategorized(generated: string) {
  * resolve to the primary checkout's name rather than the worktree directory.
  */
 export function repositoryName(gitCommonDir: string): string | undefined {
-  const parts = gitCommonDir
-    .trim()
-    .replace(/\/+$/, "")
-    .split("/")
-    .filter(Boolean);
+  const parts = gitCommonDir.trim().replace(/\/+$/, "").split("/").filter(Boolean);
   const last = parts.at(-1);
   if (!last) return;
   if (last === ".git") return parts.at(-2);

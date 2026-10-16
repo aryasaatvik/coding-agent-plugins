@@ -2,11 +2,13 @@
   "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],
+    "types": ["bun"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "allowJs": true,
+    "checkJs": true,
 
     // Bundler mode
     "moduleResolution": "bundler",
@@ -25,5 +27,14 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
-  }
+  },
+  "include": [
+    "scripts/**/*.ts",
+    "packages/**/*.ts",
+    "packages/**/*.js",
+    "plugins/**/*.ts",
+    "turbo/generators/config.js",
+    "*.ts"
+  ],
+  "exclude": ["node_modules", "**/dist/**", "**/node_modules/**"]
 }

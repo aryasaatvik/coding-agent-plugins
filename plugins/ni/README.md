@@ -16,6 +16,7 @@ Automatically translates package manager commands (npm, yarn, pnpm, bun) to use 
 ## 📋 Prerequisites
 
 - **[ni](https://github.com/antfu-collective/ni)** - Universal package manager wrapper
+
   ```bash
   npm i -g @antfu/ni
   # or
@@ -87,12 +88,12 @@ Create a `.ni-plugin.json` file in your project root or `~/.config/ni-plugin.jso
 
 ### Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `enabled` | boolean | `true` | Enable/disable the plugin |
-| `dryRun` | boolean | `false` | Show what would be translated without executing |
-| `debug` | boolean | `false` | Enable debug logging |
-| `disabledManagers` | string[] | `[]` | List of managers to skip (e.g., `["npm", "yarn"]`) |
+| Option             | Type     | Default | Description                                        |
+| ------------------ | -------- | ------- | -------------------------------------------------- |
+| `enabled`          | boolean  | `true`  | Enable/disable the plugin                          |
+| `dryRun`           | boolean  | `false` | Show what would be translated without executing    |
+| `debug`            | boolean  | `false` | Enable debug logging                               |
+| `disabledManagers` | string[] | `[]`    | List of managers to skip (e.g., `["npm", "yarn"]`) |
 
 ### Configuration Priority
 

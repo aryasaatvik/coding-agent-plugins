@@ -86,7 +86,9 @@ export async function run(args: string[]): Promise<void> {
 
   // Route to command
   if (command in commands) {
-    await (commands[command as keyof typeof commands] as (args: string[]) => Promise<void>)(commandArgs);
+    await (commands[command as keyof typeof commands] as (args: string[]) => Promise<void>)(
+      commandArgs,
+    );
   } else {
     console.error(`❌ Unknown command: ${command}\n`);
     showHelp();

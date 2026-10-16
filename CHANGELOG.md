@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-11-19
 
 ### Added
+
 - 🎉 **Initial release** of coding-agent-plugins collection
 - ✨ **Interactive installer** with beautiful checkbox-based terminal UI using @clack/prompts
 - 🔍 **Auto-detection** of Claude Code and OpenCode platforms
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 📚 **Comprehensive documentation** - Root README and plugin-specific docs
 
 ### Changed
+
 - **BREAKING**: Repository renamed from `ni-plugin` to `coding-agent-plugins`
 - **BREAKING**: Restructured as multi-plugin collection
 - **BREAKING**: Fresh git history (old history preserved in ni-plugin-archive)
@@ -27,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Included Plugins
 
 #### ni-plugin v1.0.0
+
 - Universal package manager plugin - automatically translates npm/yarn/pnpm/bun commands to use ni
 - Dual platform support (Claude Code & OpenCode)
 - Smart command translation with configuration support

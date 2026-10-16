@@ -34,15 +34,12 @@ async function loadConfigFile(path) {
     const file = Bun.file(path);
     const content = await file.json();
     return validateConfig(content);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
-async function loadConfig(cwd) {
-  const configPaths = [
-    join(cwd, ".ni-plugin.json"),
-    join(process.env.HOME || "~", ".config", "ni-plugin", "config.json")
-  ];
+async function loadConfig(cwd, globalConfigPath = join(process.env.HOME || "~", ".config", "ni-plugin", "config.json")) {
+  const configPaths = [join(cwd, ".ni-plugin.json"), globalConfigPath];
   for (const path of configPaths) {
     const config = await loadConfigFile(path);
     if (config !== null) {
@@ -160,10 +157,10 @@ async function main() {
     const translated = translateCommand(command, config);
     if (translated) {
       if (config.dryRun) {
-        const output = {
+        const output2 = {
           systemMessage: `[DRY RUN] ni-plugin would translate: '${command}' \u2192 '${translated}'`
         };
-        console.log(JSON.stringify(output));
+        console.log(JSON.stringify(output2));
         process.exit(0);
       }
       if (config.debug) {

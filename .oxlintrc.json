@@ -1,0 +1,3 @@
+{
+  "ignorePatterns": ["plugins/*/hooks/*.js", "plugins/*/opencode/*-plugin.js", "**/*.hbs"]
+}

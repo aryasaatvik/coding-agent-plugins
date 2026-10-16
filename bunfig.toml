@@ -11,15 +11,7 @@ timeout = 5000
 coverageDir = "./coverage"
 
 # Files to include in coverage
-coverageInclude = [
-  "core/**/*.ts",
-  "claude-code/**/*.ts",
-  "opencode/**/*.ts",
-]
+coverageInclude = ["core/**/*.ts", "claude-code/**/*.ts", "opencode/**/*.ts"]
 
 # Files to exclude from coverage
-coverageExclude = [
-  "**/*.test.ts",
-  "**/tests/**",
-  "**/node_modules/**",
-]
+coverageExclude = ["**/*.test.ts", "**/tests/**", "**/node_modules/**"]

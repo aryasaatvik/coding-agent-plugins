@@ -159,14 +159,7 @@ try {
   process.exit(1);
 }
 function gitRepositoryName(directory) {
-  const result = Bun.spawnSync([
-    "git",
-    "-C",
-    directory,
-    "rev-parse",
-    "--path-format=absolute",
-    "--git-common-dir"
-  ], { stdin: "ignore", stderr: "ignore" });
+  const result = Bun.spawnSync(["git", "-C", directory, "rev-parse", "--path-format=absolute", "--git-common-dir"], { stdin: "ignore", stderr: "ignore" });
   if (!result.success)
     return;
   return repositoryName(result.stdout.toString());
