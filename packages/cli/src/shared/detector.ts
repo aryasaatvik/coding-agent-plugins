@@ -5,7 +5,7 @@
 import { existsSync } from "fs";
 import { join } from "path";
 import { $ } from "bun";
-import type { PlatformInfo } from "./types";
+import type { InstallOptions, PlatformInfo } from "./types";
 
 export async function detectPlatforms(): Promise<PlatformInfo> {
   const info: PlatformInfo = {
@@ -42,7 +42,10 @@ async function checkCommand(cmd: string): Promise<boolean> {
   }
 }
 
-export async function checkDependencies(platforms: PlatformInfo): Promise<{
+export async function checkDependencies(
+  platforms: PlatformInfo,
+  options: InstallOptions = {},
+): Promise<{
   jq: boolean;
   bun: boolean;
 }> {
@@ -51,8 +54,8 @@ export async function checkDependencies(platforms: PlatformInfo): Promise<{
     bun: false,
   };
 
-  // Check for jq (required for Claude Code)
-  if (platforms.claudeCode.detected) {
+  // Check for jq (required only when Claude Code is a selected install target)
+  if (platforms.claudeCode.detected && !options.opencodeOnly) {
     try {
       await $`which jq`.quiet();
       checks.jq = true;
@@ -60,7 +63,7 @@ export async function checkDependencies(platforms: PlatformInfo): Promise<{
       checks.jq = false;
     }
   } else {
-    checks.jq = true; // Not needed if Claude Code not detected
+    checks.jq = true; // Not needed if Claude Code is not an install target
   }
 
   // Check for bun

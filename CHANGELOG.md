@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Skip the Claude Code-only `jq` prerequisite when installing with `--opencode-only`, even when Claude Code is detected.
+
 ## [1.0.0] - 2025-11-19
 
 ### Added

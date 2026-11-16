@@ -53,7 +53,7 @@ export async function install(args: string[]): Promise<void> {
   }
 
   // Check dependencies
-  const deps = await checkDependencies(platforms);
+  const deps = await checkDependencies(platforms, options);
   if (!deps.jq || !deps.bun) {
     showMissingDependencies(deps);
     showOutro(false);

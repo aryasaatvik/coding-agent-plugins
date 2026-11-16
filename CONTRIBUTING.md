@@ -10,7 +10,7 @@ the offline installed CLI consumer check; packaging uses `tar`.
 | `bun run format:check`  | Check formatting without writing files.                                            |
 | `bun run lint`          | Run oxlint; warnings fail.                                                         |
 | `bun run typecheck`     | Check plugins, CLI, scripts, and generator config with the root TypeScript config. |
-| `bun run test`          | Run the ordinary offline plugin tests.                                             |
+| `bun run test`          | Run the ordinary offline plugin and CLI tests.                                     |
 | `bun run check`         | Run formatting, lint, types, and ordinary tests in that order.                     |
 | `bun run build`         | Build Claude Code hooks, OpenCode bundles, and the npm CLI.                        |
 | `bun run test:artifact` | Package and smoke-test existing build output; run build first.                     |

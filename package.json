@@ -25,7 +25,7 @@
   "scripts": {
     "install-plugins": "bun packages/cli/bin/cli.js",
     "build": "turbo run build",
-    "test": "bun test ./plugins",
+    "test": "bun test ./plugins ./packages/cli/tests",
     "dev": "turbo run dev --parallel",
     "generate": "turbo gen",
     "clean": "turbo run clean && rm -rf .turbo",
